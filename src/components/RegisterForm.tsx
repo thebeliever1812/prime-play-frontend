@@ -1,17 +1,21 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormInput } from '@/components'
 import { UserRegisterSchema } from "@/schemas/userRegister.schema"
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { api } from '@/lib/axios';
-import { toast } from 'sonner';
+import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { Loader2 } from 'lucide-react';
 
 type Inputs = z.infer<typeof UserRegisterSchema>
 
 const RegisterForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const router = useRouter()
 
   const {
@@ -23,11 +27,21 @@ const RegisterForm = () => {
   })
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setIsSubmitting(true)
     try {
+      console.log("here")
       const response = await api.post("/user/register", data)
       toast.success(response.data?.message)
       router.replace("/login")
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Something went wrong");
+      } else {
+        console.log(error);
+        toast.error("Unexpected error");
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
   return (
@@ -47,8 +61,9 @@ const RegisterForm = () => {
         <FormInput<Inputs> type='password' label='Password' name='password' register={register} placeholder='Enter your password' required error={errors.password?.message} />
       </div>
 
-      <button type="submit" className='bg-[#4F46E5] text-white w-full rounded-[10px] h-[35px] mt-3 cursor-pointer' >
-        Register
+      <button type="submit" className={`flex justify-center items-center gap-2 text-white w-full rounded-[10px] h-[35px] mt-3  ${isSubmitting ? "bg-[#948fef] cursor-not-allowed" : "bg-[#4F46E5] cursor-pointer"}`} disabled={isSubmitting} >
+        {isSubmitting ? `Please wait` : "Register"}
+        {isSubmitting && <Loader2 className='animate-spin' />}
       </button>
     </form>
   )
