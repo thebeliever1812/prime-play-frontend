@@ -19,7 +19,7 @@ const LoginUser = () => {
                 </div>
                 <LoginForm />
                 <div className='flex justify-center gap-2 items-center'>
-                    <p>Don't have a account? <Link href={"/register"} className='text-[#4F46E5]'>Sign Up</Link></p>
+                    <p>Don&apos;t have a account? <Link href={"/register"} className='text-[#4F46E5]'>Sign Up</Link></p>
                 </div>
             </div>
         </Container>

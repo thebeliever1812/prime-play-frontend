@@ -5,7 +5,6 @@ import { FormInput } from '@/components'
 import { UserLoginSchema } from "@/schemas/userLogin.schema"
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { api } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-toastify';
