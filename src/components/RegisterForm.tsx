@@ -29,7 +29,6 @@ const RegisterForm = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsSubmitting(true)
     try {
-      console.log("here")
       const response = await api.post("/user/register", data)
       toast.success(response.data?.message)
       router.replace("/login")
@@ -37,7 +36,6 @@ const RegisterForm = () => {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Something went wrong");
       } else {
-        console.log(error);
         toast.error("Unexpected error");
       }
     } finally {
