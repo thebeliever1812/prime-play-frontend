@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
+import { api } from '@/utils/api';
 
 type Inputs = z.infer<typeof UserLoginSchema>
 
@@ -28,7 +29,7 @@ const LoginForm = () => {
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         setIsSubmitting(true)
         try {
-            const response = await axios.post("/api/login", data)
+            const response = await api.post("/user/login", data)
             toast.success(response.data?.message)
             router.replace("/")
         } catch (error) {

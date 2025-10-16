@@ -33,12 +33,9 @@ const Navbar = () => {
     useEffect(() => {
         const authenticateUser = async () => {
             try {
-                const response = await axios.get("/api/session")
-                console.log(response.data)
-                if (response.data?.authenticated) {
-                    setIsAuthenticated(true)
-                    setUser(response.data?.user)
-                }
+                const response = await api.get("/auth/session")
+                setIsAuthenticated(true)
+                setUser(response.data?.user)
             } catch (error) {
                 setIsAuthenticated(false)
                 if (axios.isAxiosError(error)) {
@@ -99,13 +96,13 @@ const Navbar = () => {
                 {/* Profile button */}
                 <div className='relative z-50'>
                     <div className='w-[40px] h-[40px] rounded-full shrink-0 relative cursor-pointer' onClick={() => setShowProfile(!showProfile)}>
-                        <Image src={user?.avatar || "/default_avatar.png"} fill alt='Avatar image of user' />
+                        <Image src={"/default_avatar.png"} fill alt='Avatar image of user' />
                     </div>
                     {
                         showProfile &&
                         <div className=' bg-amber-200 w-md absolute right-0 top-[50px] p-5'>
                             <ul>
-                                    <li className=' bg-amber-600'>{isAuthenticated && <button className="bg-amber-300 w-full cursor-pointer" onClick={() => handleLogoutUser()}>Logout</button>}</li>
+                                <li className=' bg-amber-600'>{isAuthenticated && <button className="bg-amber-300 w-full cursor-pointer" onClick={() => handleLogoutUser()}>Logout</button>}</li>
                             </ul>
                         </div>
                     }
