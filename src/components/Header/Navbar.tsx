@@ -8,6 +8,8 @@ import { api } from '@/utils/api'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '@/lib/hook'
+import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
 
 const plusJakartaSans = Plus_Jakarta_Sans({
     weight: ['400', '500', '600', '700'], // font weights you want to use
@@ -15,49 +17,43 @@ const plusJakartaSans = Plus_Jakarta_Sans({
     style: 'normal', // optional, can also use 'italic'
 });
 
-interface User {
-    _id: string
-    username: string
-    fullName: string
-    email: string
-    avatar: string
-    coverImage: string
-}
-
 const Navbar = () => {
-    const [user, setUser] = useState<User | null>(null)
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const [isLoadingUser, setIsLoadingUser] = useState(true)
     const [showProfile, setShowProfile] = useState(false)
 
     const router = useRouter()
 
-
+    const user = useAppSelector((state) => state.user.user)
+    const isLoadingUser = useAppSelector((state) => state.user.loading)
+    const dispatch = useAppDispatch()
+    const isAuthenticated = !!user
 
     useEffect(() => {
         const authenticateUser = async () => {
             try {
                 const response = await api.get("/auth/session")
-                setIsAuthenticated(response.data?.success)
-                setUser(response.data?.data)
+                if (response.data?.success) {
+                    dispatch(setUser(response.data?.data))
+                } else {
+                    dispatch(clearUser())
+                }
             } catch (error) {
-                setIsAuthenticated(false)
                 if (axios.isAxiosError(error)) {
                     console.log("Error authenticating user:", error.response?.data?.message)
                 } else {
                     console.log("Unexpected error while authenticating user")
                 }
+                dispatch(clearUser())
             } finally {
-                setIsLoadingUser(false)
+                dispatch(setLoading(false))
             }
         }
         authenticateUser()
-    }, [setIsAuthenticated])
+    }, [dispatch])
 
     const handleLogoutUser = async () => {
         try {
             const response = await api.post("/user/logout")
-            setIsAuthenticated(false)
+            dispatch(clearUser())
             setShowProfile(false)
             toast.success(response.data?.message)
             router.replace("/")
