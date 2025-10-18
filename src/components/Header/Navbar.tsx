@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { api } from '@/utils/api'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { Loader2, TextAlignJustify, X } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
 
@@ -19,6 +19,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 const Navbar = () => {
     const [showProfile, setShowProfile] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
 
     const router = useRouter()
 
@@ -96,76 +97,102 @@ const Navbar = () => {
         }
     ]
     return (
-        <nav className='w-full bg-white flex gap-[16px] justify-between px-[24px] py-[20px] border-b-[1px] border-[#E2E8F0] '>
-            <div className='w-full'>
+        <>
+            <nav className='w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] '>
+                <div className='flex items-center gap-2 sm:gap-4'>
+                    <div className='cursor-pointer' onClick={() => setShowMenu(!showMenu)}>
 
-            </div>
-            <div className='w-full flex gap-[12px] justify-end items-center'>
-                {/* Search bar */}
-                <div className='h-[40px] w-full max-w-[320px] align-middle px-[12px] py-[8px] border-[#CBD5E1] border-[1px] rounded-[123px]'>
-                    <div className='w-full max-w-[296px] flex gap-[8px] items-center justify-between' >
-                        <Image src={"/search_icon.png"} alt='Search icon' width={20} height={20} />
-                        <input type="search" className={`w-full outline-none placeholder-[#475569] ${plusJakartaSans.className}`} placeholder='Search our video...' />
+                        {
+                            showMenu ?
+                                <X size={28} />
+                                :
+                                <TextAlignJustify size={28} />
+                        }
+                    </div>
+                    <div className='w-[30px] sm:w-[35px] aspect-square relative cursor-pointer' onClick={() => router.push("/")}>
+                        <Image src={"/logo.png"} alt='Prime play logo' fill />
                     </div>
                 </div>
-                {/* Upload Button */}
-                {
-                    isLoadingUser ? <>
-                        <Loader2 className='animate-spin' />
-                    </> : <>
-                        {
-                            isAuthenticated ?
-                                <Link href={"/upload"} className='w-full max-w-fit flex gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white rounded-full items-center'>
-                                    <Image src={"/upload.png"} width={15.63} height={15.63} alt='Upload icon' />
-                                    <span>
-                                        Upload
-                                    </span>
-                                </Link>
-                                :
-                                <Link href={"/login"} className='w-full max-w-fit flex gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white rounded-full items-center'>
-                                    Login
-                                </Link>
-                        }
-                        {/* Profile button */}
-                        <div className='relative z-50'>
-                            <div className='w-[40px] h-[40px] rounded-full shrink-0 relative cursor-pointer' onClick={() => setShowProfile(!showProfile)}>
-                                <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
+
+                <div className='w-full flex gap-[5px] sm:gap-[12px] justify-end items-center'>
+                    {/* Search bar */}
+                    <div className='w-full max-w-[165px] sm:max-w-[400px] align-middle px-[12px] py-[8px] border-[#CBD5E1] border-[1px] rounded-[123px] '>
+                        <div className='w-full max-w-[296px] flex gap-[8px] items-center justify-between' >
+                            <div className='w-4 sm:w-5 aspect-square relative shrink-0'>
+                                <Image src={"/search_icon.png"} alt='Search icon' fill />
+                            </div>
+                            <input type="search" className={`w-full outline-none placeholder-[#475569] text-sm sm:text-base ${plusJakartaSans.className}`} placeholder='Search video...' />
+                        </div>
+                    </div>
+                    {/* Upload Button */}
+                    {
+                        isLoadingUser ? <>
+                            <Loader2 className='animate-spin' />
+                        </> : <>
+                            {
+                                isAuthenticated ?
+                                    <Link href={"/upload"} className='w-full max-w-fit flex items-center gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white text-sm sm:text-base rounded-full '>
+                                        <div className='w-[15.63px] aspect-square relative shrink-0'>
+                                            <Image src={"/upload.png"} fill alt='Upload icon' />
+                                        </div>
+                                        <span className='hidden sm:block'>
+                                            Upload
+                                        </span>
+                                    </Link>
+                                    :
+                                    <Link href={"/login"} className='w-full max-w-fit sm:flex sm:items-center gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white text-sm sm:text-base rounded-full hidden'>
+                                        Login
+                                    </Link>
+                            }
+                            {/* Profile button */}
+                            <div className='relative z-50'>
+                                <div className='w-[40px] h-[40px] rounded-full shrink-0 relative cursor-pointer' onClick={() => setShowProfile(!showProfile)}>
+                                    <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
+                                </div>
+                                {
+                                    showProfile &&
+                                    <div className='w-60 sm:w-sm absolute right-0 top-[50px] p-5 rounded-xl flex flex-col sm:flex-row items-center gap-5 duration-200 bg-[#F1F5F9]'>
+                                        <div className='flex flex-col items-center w-full sm:max-w-1/2'>
+                                            <div className='w-14 sm:w-24 aspect-square relative duration-200 '>
+                                                <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
+                                            </div>
+                                            {
+                                                isAuthenticated && <>
+                                                    <h2 className='text-lg'>{user?.fullName}</h2>
+                                                    <span className='text-sm'>{user?.username}</span>
+                                                </>
+                                            }
+                                        </div>
+                                        <ul className='w-full sm:max-w-1/2 space-y-3'>
+                                            {
+                                                (isAuthenticated ? authenticatedProfileOptions : unauthenticatedProfileOptions).map((option, index) => (
+                                                    <li key={index} className='w-full bg-[#4F46E5] rounded-md px-2 py-1 text-center text-white cursor-pointer hover:bg-[#382DE6] active:text-[#382DE6] active:bg-white select-none' onClick={option.method}>
+                                                        {option.option}
+                                                    </li>
+                                                ))
+                                            }
+                                        </ul>
+                                    </div>
+                                }
                             </div>
                             {
                                 showProfile &&
-                                <div className='w-60 sm:w-sm absolute right-0 top-[50px] p-5 rounded-xl flex flex-col sm:flex-row items-center gap-5 duration-200 bg-[#F1F5F9]'>
-                                    <div className='flex flex-col items-center sm:w-1/2'>
-                                        <div className='w-14 sm:w-24 aspect-square relative duration-200 '>
-                                            <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
-                                        </div>
-                                        {
-                                            isAuthenticated && <>
-                                                <h2 className='text-lg'>{user?.fullName}</h2>
-                                                <span className='text-sm'>{user?.username}</span>
-                                            </>
-                                        }
-                                    </div>
-                                    <ul className='sm:grow space-y-3'>
-                                        {
-                                            (isAuthenticated ? authenticatedProfileOptions : unauthenticatedProfileOptions).map((option, index) => (
-                                                <li key={index} className='w-full bg-[#4F46E5] rounded-md px-2 py-1 text-center text-white cursor-pointer hover:bg-[#382DE6]' onClick={option.method}>
-                                                    {option.option}
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
+                                <div className='fixed inset-0 bg-black/50 backdrop-blur-xs z-40' onClick={() => setShowProfile(false)}>
                                 </div>
                             }
-                        </div>
-                        {
-                            showProfile &&
-                            <div className='fixed inset-0 bg-black/50 backdrop-blur-xs z-40' onClick={() => setShowProfile(false)}>
-                            </div>
-                        }
-                    </>
-                }
+                        </>
+                    }
+                </div>
+            </nav>
+
+            <div>
+                <div className={`fixed w-full h-screen bg-black/40 backdrop-blur-[2px] z-50 ${showMenu ? 'block' : 'hidden'}`} onClick={() => setShowMenu(false)}>
+                </div>
+                <div className={`fixed bg-black w-full max-w-80 h-screen left-0 z-[60] px-6 py-3 overflow-y-auto transition-transform duration-500 ease-out ${showMenu ? "translate-x-0" : "-translate-x-full"}`}>
+
+                </div>
             </div>
-        </nav>
+        </>
     )
 }
 
