@@ -23,10 +23,9 @@ const UploadPage = () => {
 
     return (
         <Container className='relative'>
-            {/* {
+            {
                 isLoadingUser ? <Loader className='animate-spin absolute inset-0 m-auto' /> : <UploadVideoForm />
-            } */}
-            <UploadVideoForm />
+            }
         </Container>
     )
 }
