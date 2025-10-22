@@ -80,6 +80,12 @@ const Navbar = () => {
         {
             option: "Logout",
             method: handleLogoutUser
+        },
+        {
+            option: "Create account",
+            method: function () {
+                router.push('/register')
+            }
         }
     ]
 
@@ -102,7 +108,6 @@ const Navbar = () => {
             <nav className='w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] '>
                 <div className='flex items-center gap-2 sm:gap-4'>
                     <div className='cursor-pointer' onClick={() => setShowMenu(!showMenu)}>
-
                         {
                             showMenu ?
                                 <X size={28} />

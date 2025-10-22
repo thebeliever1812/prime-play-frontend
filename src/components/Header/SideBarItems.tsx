@@ -1,7 +1,7 @@
 import React from 'react'
 
 const SidebarItems = () => {
-    const sidebarItems = ["Watch History", "Liked Videos"]
+    const sidebarItems = ["Watch History", "Liked Videos", "My Playlist", "My Videos", "Settings", "Send Feedback"]
     return (
         <ul className='w-full space-y-2 mb-15'>
             {
