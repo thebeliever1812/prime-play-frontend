@@ -1,23 +1,58 @@
+"use client"
 import Image from 'next/image'
 import React from 'react'
+import { formatDistanceToNow } from 'date-fns';
+import { Play } from 'lucide-react'
+import { useRouter } from 'next/navigation';
 
-const VideoCard = () => {
+interface VideoCardProps {
+    _id?: string;
+    title: string;
+    description: string;
+    uploadDate: string;
+    thumbnail: string;
+    views: number;
+    avatarUrl?: string;
+}
+
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl }) => {
+    const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
+
+    const router = useRouter();
     return (
-        <div className='w-full max-w-md h-80 rounded-lg shadow-md p-1 cursor-pointer hover:shadow-2xl transition-shadow duration-300' >
-            <div className='w-full bg-amber-500 h-4/6 rounded-lg relative overflow-hidden'>
+        <div className='w-full max-w-md rounded-lg shadow-md p-1 cursor-pointer hover:shadow-2xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
+            <div className='w-full aspect-video rounded-lg relative overflow-hidden '>
                 <Image
-                    src='/sample_thumbnail.jpg'
-                    alt='Video Title'
+                    src={thumbnail}
+                    alt={title}
                     layout='fill'
                     objectFit='cover'
                     className='rounded-lg'
+                    loading='lazy'
                 />
+                {/* Play button overlay */}
+                <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-300'>
+                    <Play size={48} className='text-white' />
+                </div>
             </div>
-            <div className='px-2 flex flex-col gap-1 mt-2'>
-                <h2 className='font-semibold text-lg mt-2'>Video Title</h2>
-                <p className='text-sm text-gray-700'>This is a brief description of the video content.</p>
+            <div className='w-full px-2 flex flex-col gap-1 my-2'>
+                {avatarUrl && (
+                    <div className='w-8 h-8 relative rounded-full overflow-hidden'>
+                        <Image
+                            src={avatarUrl}
+                            alt='Avatar'
+                            fill
+                            className='rounded-full'
+                        />
+                    </div>
+                )}
                 <div>
-                    <span className='text-xs text-gray-500'>Uploaded on: 2023-01-01</span>
+                    <h2 className='font-semibold text-lg mt-2'>{title}</h2>
+                    <p className='text-sm text-gray-700'>{description.substring(0, 100)}...</p>
+                    <div className='w-full flex items-center justify-between mt-2'>
+                        <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
+                        <span className='text-xs text-gray-500'>{views} views</span>
+                    </div>
                 </div>
             </div>
         </div>
