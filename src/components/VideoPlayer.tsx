@@ -50,7 +50,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
             }
         }
         fetchVideo();
-    }, []);
+    }, [id]);
 
     if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">

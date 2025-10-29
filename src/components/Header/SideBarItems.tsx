@@ -42,7 +42,7 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ setShowMenu }) => {
         <ul className='w-full space-y-2 mb-15'>
             {
                 sidebarItems.map((item, index) => {
-                    let isActive = item.path === pathname
+                    const isActive = item.path === pathname
                     return <li key={index} className={`w-full rounded-lg cursor-pointer hover:bg-[#22C55E] duration-200 hover:shadow-2xs active:bg-white select-none ${isActive ? "bg-[#22C55E]" : "bg-[#BBF7D0]"}`} onClick={() => setShowMenu(false)}>
                         <Link href={item.path} className='w-full block px-4 py-2 rounded-lg'>{item.label}</Link>
                     </li>
