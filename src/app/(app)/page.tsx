@@ -1,8 +1,10 @@
+import { AllVideos } from "@/components";
+
 export default function Home() {
-  
+
   return (
     <div>
-      Home Page
+      <AllVideos />
     </div>
   );
 }

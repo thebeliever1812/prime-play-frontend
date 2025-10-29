@@ -35,9 +35,10 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                     <Play size={48} className='text-white' />
                 </div>
             </div>
-            <div className='w-full px-2 flex flex-col gap-1 my-2'>
+            {/* Video details */}
+            <div className='w-full px-2 flex items-start gap-2 mt-4 mb-2'>
                 {avatarUrl && (
-                    <div className='w-8 h-8 relative rounded-full overflow-hidden'>
+                    <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0'>
                         <Image
                             src={avatarUrl}
                             alt='Avatar'
@@ -47,7 +48,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                     </div>
                 )}
                 <div>
-                    <h2 className='font-semibold text-lg mt-2'>{title}</h2>
+                    <h2 className='font-semibold text-lg'>{title}</h2>
                     <p className='text-sm text-gray-700'>{description.substring(0, 100)}...</p>
                     <div className='w-full flex items-center justify-between mt-2'>
                         <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>

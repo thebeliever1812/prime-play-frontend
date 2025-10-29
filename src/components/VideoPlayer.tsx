@@ -1,9 +1,7 @@
 "use client";
-import { useAppSelector } from '@/lib/hook';
 import { api } from '@/utils/api';
 import axios from 'axios';
 import { Loader, VideoOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { Container } from './index';
 import Image from 'next/image';
@@ -32,20 +30,14 @@ interface VideoData {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
-    const user = useAppSelector((state) => state.user.user);
-    const isAuthenticated = !!user;
-    const isLoadingUser = useAppSelector((state) => state.user.loading);
     const [videoData, setVideoData] = useState<VideoData | null>(null);
     const [loadingVideo, setLoadingVideo] = useState<boolean>(true);
     const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
-
-    const router = useRouter();
 
     useEffect(() => {
         const fetchVideo = async () => {
             try {
                 const response = await api.get(`/video/play-video/${id}`);
-                console.log('Fetched video data:', response.data);
                 setVideoData(response.data?.data || null);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
@@ -57,15 +49,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                 setLoadingVideo(false);
             }
         }
-        if (!isLoadingUser && isAuthenticated) {
-            fetchVideo();
-        }
-        if (!isAuthenticated && !isLoadingUser) {
-            router.push('/login');
-        }
-    }, [isAuthenticated, isLoadingUser, router]);
+        fetchVideo();
+    }, []);
 
-    if (isLoadingUser || loadingVideo) {
+    if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">
             <Loader className="animate-spin w-8 h-8" />
         </Container>
