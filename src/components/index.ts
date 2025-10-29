@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm";
 import VideoCard from "./VideoCard";
 import VideoPlayer from "./VideoPlayer";
 import AllVideos from "./AllVideos";
+import WatchHistoryVideoCard from "./WatchHistoryVideoCard";
 
 export {
     Container,
@@ -13,5 +14,6 @@ export {
     LoginForm,
     VideoCard,
     VideoPlayer,
-    AllVideos
+    AllVideos,
+    WatchHistoryVideoCard
 };
