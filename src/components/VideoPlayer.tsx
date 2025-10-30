@@ -1,8 +1,8 @@
 "use client";
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader, VideoOff } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import { Loader, Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react'
 import { Container } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
@@ -33,6 +33,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
     const [videoData, setVideoData] = useState<VideoData | null>(null);
     const [loadingVideo, setLoadingVideo] = useState<boolean>(true);
     const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [isMuted, setIsMuted] = useState(true);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
         const fetchVideo = async () => {
@@ -52,6 +55,35 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         fetchVideo();
     }, [id]);
 
+    const togglePlay = () => {
+        if (!videoRef.current) return;
+        if (videoRef.current.paused) {
+            videoRef.current.play();
+            setIsPlaying(true);
+        } else {
+            videoRef.current.pause();
+            setIsPlaying(false);
+        }
+    };
+
+    const toggleMute = () => {
+        if (!videoRef.current) return;
+        videoRef.current.muted = !videoRef.current.muted;
+        setIsMuted(videoRef.current.muted);
+    };
+
+    const handleFullscreen = () => {
+        if (videoRef.current?.requestFullscreen) videoRef.current.requestFullscreen();
+    };
+
+    const restartVideo = () => {
+        if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+    };
+
     if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">
             <Loader className="animate-spin w-8 h-8" />
@@ -63,14 +95,45 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         <Container className="max-w-5xl py-4 space-y-4">
             {videoData ? (
                 <>
-                    <div className='flex justify-center items-center aspect-video w-full  mx-auto rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.1)] flex-col gap-4 bg-white'>
+                    <div className='flex justify-center items-center aspect-video w-full  mx-auto rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.1)] flex-col gap-4 bg-white relative'>
                         <video
                             key={videoData._id}
                             src={videoData.videoFile}
-                            controls
                             className='w-full h-full rounded-2xl'
+                            ref={videoRef}
                             autoPlay
+                            muted
+                            playsInline
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            onEnded={() => setIsPlaying(false)}
+                            onLoadedMetadata={() => {
+                                // Try autoplay programmatically too
+                                videoRef.current?.play().catch(() => {
+                                    console.log("Autoplay blocked, waiting for user interaction.");
+                                });
+                            }}
                         />
+                        {/* Custom Controls */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-3 flex items-center justify-between text-white rounded-b-2xl">
+                            <div className="flex items-center gap-3">
+                                <button onClick={togglePlay}>
+                                    {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+                                </button>
+
+                                <button onClick={toggleMute}>
+                                    {isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />}
+                                </button>
+
+                                <button onClick={restartVideo}>
+                                    <RotateCcw size={22} />
+                                </button>
+                            </div>
+
+                            <button onClick={handleFullscreen}>
+                                <Maximize size={22} />
+                            </button>
+                        </div>
                     </div>
                     <div className='space-y-2'>
                         <h1 className='text-2xl font-extrabold text-[#1E293B]'>{videoData.title}</h1>
@@ -101,9 +164,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                         </div>
                         {/* Description */}
                         <p className='whitespace-pre-line' >
-                            {showFullDescription || videoData.description.length <= 130
+                            {showFullDescription || videoData.description.length <= 100
                                 ? videoData.description
-                                : `${videoData.description.substring(0, 130)}...`}
+                                : `${videoData.description.substring(0, 100)}...`}
+                            {
+                                videoData.description.length > 100 && (
+                                    <span className='text-blue-600 ml-1'>
+                                        {showFullDescription ? ' Show less' : ' Read more'}
+                                    </span>
+                                )
+                            }
                         </p>
                     </div>
                 </>

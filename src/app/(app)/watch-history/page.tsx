@@ -92,9 +92,9 @@ const WatchHistory = () => {
             {videos.map((video) => (
                 <div key={video._id} className="mb-4">
                     <WatchHistoryVideoCard
+                        _id={video._id}
                         title={video.title}
                         thumbnail={video.thumbnail}
-                        avatar={video.owner.avatar}
                         views={video.views}
                         fullName={video.owner.fullName}
                     />

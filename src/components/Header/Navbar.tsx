@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { api } from '@/utils/api'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import { Loader2, TextAlignJustify, X } from 'lucide-react'
+import { Loader2, TextAlignJustify } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
 import { Sidebar } from '@/components/Header'
@@ -21,6 +21,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const Navbar = () => {
     const [showProfile, setShowProfile] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
+    const [showNavbar, setShowNavbar] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
     const router = useRouter()
 
@@ -52,6 +54,24 @@ const Navbar = () => {
         authenticateUser()
     }, [dispatch])
 
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                setShowNavbar(false); // hide when scrolling down
+            } else {
+                setShowNavbar(true); // show when scrolling up
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+        // 👇 don't include lastScrollY in dependency array
+        // it should only attach once
+    }, []);
+
     const handleLogoutUser = async () => {
         try {
             const response = await api.post("/user/logout")
@@ -80,12 +100,6 @@ const Navbar = () => {
         {
             option: "Logout",
             method: handleLogoutUser
-        },
-        {
-            option: "Create account",
-            method: function () {
-                router.push('/register')
-            }
         }
     ]
 
@@ -105,15 +119,10 @@ const Navbar = () => {
     ]
     return (
         <>
-            <nav className='w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] '>
+            <nav className={`w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] fixed top-0 left-0 z-50 transition-transform duration-300 ${showNavbar ? "translate-y-0" : "-translate-y-full"}`}>
                 <div className='flex items-center gap-2 sm:gap-4'>
                     <div className='cursor-pointer' onClick={() => setShowMenu(!showMenu)}>
-                        {
-                            showMenu ?
-                                <X size={28} />
-                                :
-                                <TextAlignJustify size={28} />
-                        }
+                        <TextAlignJustify size={28} />
                     </div>
                     <div className='w-[30px] sm:w-[35px] aspect-square relative cursor-pointer' onClick={() => router.push("/")}>
                         <Image src={"/logo.png"} alt='Prime play logo' fill />

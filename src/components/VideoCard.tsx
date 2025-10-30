@@ -20,7 +20,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
 
     const router = useRouter();
     return (
-        <div className='w-full max-w-md rounded-lg shadow-md p-1 cursor-pointer hover:shadow-2xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
+        <div className='w-full max-w-md rounded-lg shadow-md p-1 cursor-pointer hover:shadow-xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
             <div className='w-full aspect-video rounded-lg relative overflow-hidden '>
                 <Image
                     src={thumbnail}
@@ -32,7 +32,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 />
                 {/* Play button overlay */}
                 <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-300'>
-                    <Play size={48} className='text-white' />
+                    <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover'/>
                 </div>
             </div>
             {/* Video details */}
@@ -48,8 +48,8 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                     </div>
                 )}
                 <div>
-                    <h2 className='font-semibold text-lg'>{title}</h2>
-                    <p className='text-sm text-gray-700'>{description.substring(0, 100)}...</p>
+                    <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
+                    <p className='text-sm text-gray-700'>{description.length > 70 ? `${description.substring(0, 70)}...` : description}</p>
                     <div className='w-full flex items-center justify-between mt-2'>
                         <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
                         <span className='text-xs text-gray-500'>{views} views</span>
