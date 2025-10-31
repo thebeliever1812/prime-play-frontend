@@ -6,6 +6,7 @@ import VideoCard from "./VideoCard";
 import VideoPlayer from "./VideoPlayer";
 import AllVideos from "./AllVideos";
 import WatchHistoryVideoCard from "./WatchHistoryVideoCard";
+import ChannelInfo from "./ChannelInfo";
 
 export {
     Container,
@@ -15,5 +16,6 @@ export {
     VideoCard,
     VideoPlayer,
     AllVideos,
-    WatchHistoryVideoCard
+    WatchHistoryVideoCard,
+    ChannelInfo,
 };

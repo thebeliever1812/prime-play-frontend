@@ -19,10 +19,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 const Navbar = () => {
-    const [showProfile, setShowProfile] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
-    const [showNavbar, setShowNavbar] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const [showProfile, setShowProfile] = useState(false)
 
     const router = useRouter()
 
@@ -53,24 +51,6 @@ const Navbar = () => {
         }
         authenticateUser()
     }, [dispatch])
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollY && currentScrollY > 50) {
-                setShowNavbar(false); // hide when scrolling down
-            } else {
-                setShowNavbar(true); // show when scrolling up
-            }
-            setLastScrollY(currentScrollY);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => window.removeEventListener("scroll", handleScroll);
-        // 👇 don't include lastScrollY in dependency array
-        // it should only attach once
-    }, []);
 
     const handleLogoutUser = async () => {
         try {
@@ -119,7 +99,7 @@ const Navbar = () => {
     ]
     return (
         <>
-            <nav className={`w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] fixed top-0 left-0 z-50 transition-transform duration-300 ${showNavbar ? "translate-y-0" : "-translate-y-full"}`}>
+            <nav className={`w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] fixed top-0 left-0 z-50 transition-transform duration-300`}>
                 <div className='flex items-center gap-2 sm:gap-4'>
                     <div className='cursor-pointer' onClick={() => setShowMenu(!showMenu)}>
                         <TextAlignJustify size={28} />
@@ -166,7 +146,7 @@ const Navbar = () => {
                                 </div>
                                 {
                                     showProfile &&
-                                    <div className='w-60 sm:w-sm absolute right-0 top-[50px] p-5 rounded-xl flex flex-col sm:flex-row items-center gap-5 duration-200 bg-[#F1F5F9]'>
+                                    <div className='w-60 sm:w-sm absolute right-0 top-[50px] p-5 rounded-xl flex flex-col sm:flex-row items-center gap-5 duration-200 bg-[#F1F5F9] z-50'>
                                         <div className='flex flex-col items-center w-full sm:max-w-1/2'>
                                             <div className='w-14 sm:w-24 aspect-square relative duration-200 '>
                                                 <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
@@ -190,16 +170,17 @@ const Navbar = () => {
                                     </div>
                                 }
                             </div>
-                            {
-                                showProfile &&
-                                <div className='fixed inset-0 bg-black/50 backdrop-blur-xs z-40' onClick={() => setShowProfile(false)}>
-                                </div>
-                            }
                         </>
                     }
                 </div>
+                {
+                    showProfile &&
+                    <div className='fixed w-full h-screen left-0 bg-black/40 backdrop-blur-[2px] top-0 z-40' onClick={() => setShowProfile(false)}>
+                    </div>
+                }
             </nav>
-
+            <div className='w-full h-[61px] sm:h-[69px]'>
+            </div>
             <Sidebar showMenu={showMenu} setShowMenu={setShowMenu} />
         </>
     )

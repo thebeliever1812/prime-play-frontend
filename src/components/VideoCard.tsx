@@ -2,7 +2,6 @@
 import Image from 'next/image'
 import React from 'react'
 import { formatDistanceToNow } from 'date-fns';
-import { Play } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 
 interface VideoCardProps {

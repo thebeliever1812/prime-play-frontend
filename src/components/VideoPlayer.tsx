@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Container } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 interface VideoPlayerProps {
     id: string;
@@ -36,6 +37,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [isMuted, setIsMuted] = useState(true);
     const videoRef = useRef<HTMLVideoElement | null>(null);
+
+    const router = useRouter()
 
     useEffect(() => {
         const fetchVideo = async () => {
@@ -144,7 +147,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                                 alt={videoData.owner.username}
                                 width={45}
                                 height={45}
-                                className='rounded-full'
+                                className='rounded-full cursor-pointer'
+                                onClick={() => router.push(`/channel/${videoData.owner.username}`)}
                             />
                             <div>
                                 <p className='font-medium'>{videoData.owner.fullName}</p>
