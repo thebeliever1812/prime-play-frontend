@@ -7,6 +7,7 @@ import VideoPlayer from "./VideoPlayer";
 import AllVideos from "./AllVideos";
 import WatchHistoryVideoCard from "./WatchHistoryVideoCard";
 import ChannelInfo from "./ChannelInfo";
+import ChannelProfileTabs from "./ChannelProfileTabs";
 
 export {
     Container,
@@ -18,4 +19,5 @@ export {
     AllVideos,
     WatchHistoryVideoCard,
     ChannelInfo,
+    ChannelProfileTabs,
 };
