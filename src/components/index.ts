@@ -10,6 +10,7 @@ import ChannelInfo from "./ChannelInfo";
 import ChannelProfileTabs from "./ChannelProfileTabs";
 import FetchChannelVideo from "./FetchChannelVideo";
 import CustomLoader from "./CustomLoader";
+import AboutChannelOwner from "./AboutChannelOwner";
 
 export {
     Container,
@@ -24,4 +25,5 @@ export {
     ChannelProfileTabs,
     FetchChannelVideo,
     CustomLoader,
+    AboutChannelOwner,
 };

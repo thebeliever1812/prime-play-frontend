@@ -1,8 +1,10 @@
+import { AboutChannelOwner } from '@/components'
 import React from 'react'
 
-const About = () => {
+const About = async ({ params }: { params: Promise<{ username: string }> }) => {
+    const { username } = await params
     return (
-        <div>About</div>
+        <AboutChannelOwner username={username} />
     )
 }
 

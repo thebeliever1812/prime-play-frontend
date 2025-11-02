@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { Container, VideoCard } from '@/components'
+import { VideoCard } from '@/components'
 import { api } from '@/utils/api'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'

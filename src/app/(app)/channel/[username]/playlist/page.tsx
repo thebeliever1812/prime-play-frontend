@@ -2,7 +2,7 @@ import React from 'react'
 
 const Playlist = () => {
     return (
-        <div>Playlist</div>
+        <div className='w-full p-4 rounded-md text-center'>No playlist created</div>
     )
 }
 
