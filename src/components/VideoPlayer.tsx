@@ -1,9 +1,9 @@
 "use client";
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader, Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
+import { Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
-import { Container } from './index';
+import { Container, CustomLoader } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -89,7 +89,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
 
     if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <CustomLoader />
         </Container>
         )
     }

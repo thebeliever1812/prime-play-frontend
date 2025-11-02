@@ -2,7 +2,6 @@
 import { Container, VideoCard } from '@/components'
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 
 interface Owner {
@@ -47,7 +46,11 @@ const AllVideos = () => {
 
     if (loadingVideos) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <div className="flex flex-row gap-2">
+                <div className="w-4 h-4 rounded-full bg-[#4F46E5] animate-bounce [animation-delay:.7s]"></div>
+                <div className="w-4 h-4 rounded-full bg-[#4F46E5] animate-bounce [animation-delay:.3s]"></div>
+                <div className="w-4 h-4 rounded-full bg-[#4F46E5] animate-bounce [animation-delay:.7s]"></div>
+            </div>
         </Container>
         )
     }

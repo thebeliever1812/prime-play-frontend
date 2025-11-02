@@ -1,9 +1,8 @@
 "use client"
-import { Container, WatchHistoryVideoCard } from '@/components'
+import { Container, CustomLoader, WatchHistoryVideoCard } from '@/components'
 import { useAppSelector } from '@/lib/hook';
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
@@ -60,7 +59,7 @@ const WatchHistory = () => {
 
     if (isLoadingUser) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <CustomLoader />
         </Container>
         )
     }
@@ -74,7 +73,7 @@ const WatchHistory = () => {
 
     if (loadingVideos) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <CustomLoader />
         </Container>
         )
     }

@@ -3,9 +3,8 @@ import { UploadVideoForm } from '@/components/UploadPage'
 import React, { useEffect } from 'react'
 import { useAppSelector } from '@/lib/hook'
 import { useRouter } from 'next/navigation'
-import { Loader } from 'lucide-react'
 import { toast } from 'react-toastify'
-import { Container } from '@/components'
+import { Container, CustomLoader } from '@/components'
 
 const UploadPage = () => {
     const isLoadingUser = useAppSelector((state) => state.user.loading)
@@ -24,7 +23,7 @@ const UploadPage = () => {
     return (
         <Container className='relative'>
             {
-                isLoadingUser ? <Loader className='animate-spin absolute inset-0 m-auto' /> : <UploadVideoForm />
+                isLoadingUser ? <CustomLoader /> : <UploadVideoForm />
             }
         </Container>
     )

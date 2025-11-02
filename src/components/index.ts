@@ -8,6 +8,8 @@ import AllVideos from "./AllVideos";
 import WatchHistoryVideoCard from "./WatchHistoryVideoCard";
 import ChannelInfo from "./ChannelInfo";
 import ChannelProfileTabs from "./ChannelProfileTabs";
+import FetchChannelVideo from "./FetchChannelVideo";
+import CustomLoader from "./CustomLoader";
 
 export {
     Container,
@@ -20,4 +22,6 @@ export {
     WatchHistoryVideoCard,
     ChannelInfo,
     ChannelProfileTabs,
+    FetchChannelVideo,
+    CustomLoader,
 };

@@ -1,9 +1,8 @@
 "use client"
-import { Container, VideoCard } from '@/components'
+import { Container, CustomLoader, VideoCard } from '@/components'
 import { useAppSelector } from '@/lib/hook';
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
@@ -51,7 +50,7 @@ const MyVideos = () => {
 
     if (isLoadingUser) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <CustomLoader />
         </Container>
         )
     }
@@ -65,7 +64,7 @@ const MyVideos = () => {
 
     if (loadingVideos) {
         return (<Container className="max-w-6xl flex justify-center items-center">
-            <Loader className="animate-spin w-8 h-8" />
+            <CustomLoader />
         </Container>
         )
     }

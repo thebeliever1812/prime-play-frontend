@@ -1,12 +1,12 @@
-import { VideoCard } from '@/components'
+import { FetchChannelVideo } from '@/components'
 import React from 'react'
 
-const Channel = async ({ params }: { params: Promise<{ username: string }> }) => {
+const ChannelVideos = async ({ params }: { params: Promise<{ username: string }> }) => {
+    const { username } = await params
+
     return (
-        <div className='w-full bg-amber-300'>
-            {/* <VideoCard /> */}
-        </div>
+        <FetchChannelVideo username={username} />
     )
 }
 
-export default Channel
+export default ChannelVideos
