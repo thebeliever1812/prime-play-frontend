@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 interface VideoCardProps {
     _id?: string;
+    username?: string
     title: string;
     description: string;
     uploadDate: string;
@@ -14,7 +15,7 @@ interface VideoCardProps {
     avatarUrl?: string;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
 
     const router = useRouter();
@@ -31,13 +32,16 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 />
                 {/* Play button overlay */}
                 <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-300'>
-                    <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover'/>
+                    <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover' />
                 </div>
             </div>
             {/* Video details */}
             <div className='w-full px-2 flex items-start gap-2 mt-4 mb-2'>
                 {avatarUrl && (
-                    <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0'>
+                    <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0' onClick={(e) => {
+                        e.stopPropagation()
+                        router.push(`/channel/${username}`)
+                    }}>
                         <Image
                             src={avatarUrl}
                             alt='Avatar'

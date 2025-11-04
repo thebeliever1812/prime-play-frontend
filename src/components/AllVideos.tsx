@@ -18,7 +18,7 @@ interface Video {
     thumbnail: string;
     createdAt: string;
     views: number;
-    ownerInfo: Owner
+    ownerInfo: Owner;
 }
 
 const AllVideos = () => {
@@ -74,6 +74,7 @@ const AllVideos = () => {
                 thumbnail={video.thumbnail}
                 views={video.views}
                 avatarUrl={video.ownerInfo.avatar}
+                username={video.ownerInfo.username}
             />)
             )}
         </Container>

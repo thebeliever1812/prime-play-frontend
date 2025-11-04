@@ -30,13 +30,12 @@ const Navbar = () => {
     const isAuthenticated = !!user
 
     useEffect(() => {
-        const authenticateUser = async () => {
+        const refreshTokensIfRefreshTokenExist = async () => {
             try {
-                const response = await api.get("/auth/session")
+                const response = await api.post("/user/refresh-token")
                 if (response.data?.success) {
-                    dispatch(setUser(response.data?.data))
-                } else {
-                    dispatch(clearUser())
+                    const autoLoggedInUserResponse = await api.get("/auth/session")
+                    dispatch(setUser(autoLoggedInUserResponse.data?.data))
                 }
             } catch (error) {
                 if (axios.isAxiosError(error)) {
@@ -47,6 +46,27 @@ const Navbar = () => {
                 dispatch(clearUser())
             } finally {
                 dispatch(setLoading(false))
+            }
+        }
+
+        const authenticateUser = async () => {
+            try {
+                const response = await api.get("/auth/session")
+                dispatch(setUser(response.data?.data))
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        await refreshTokensIfRefreshTokenExist()
+                    } else {
+                        console.log("Error authenticating user:", error.response?.data?.message)
+                        dispatch(clearUser())
+                        dispatch(setLoading(false))
+                    }
+                } else {
+                    console.log("Unexpected error while authenticating user")
+                    dispatch(clearUser())
+                    dispatch(setLoading(false))
+                }
             }
         }
         authenticateUser()
