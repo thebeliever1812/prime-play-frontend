@@ -11,6 +11,7 @@ import ChannelProfileTabs from "./ChannelProfileTabs";
 import FetchChannelVideo from "./FetchChannelVideo";
 import CustomLoader from "./CustomLoader";
 import AboutChannelOwner from "./AboutChannelOwner";
+import SubscriptionForm from "./SubscriptionForm";
 
 export {
     Container,
@@ -26,4 +27,5 @@ export {
     FetchChannelVideo,
     CustomLoader,
     AboutChannelOwner,
+    SubscriptionForm,
 };

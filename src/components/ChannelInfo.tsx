@@ -1,5 +1,14 @@
+"use client"
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { SubscriptionForm } from './index';
+import { api } from '@/utils/api';
+import axios from 'axios';
+import { is } from 'zod/locales';
+
+interface ChannelInfoProps {
+    username: string;
+}
 
 interface ChannelData {
     _id: string;
@@ -13,8 +22,29 @@ interface ChannelData {
     username: string;
 }
 
-const ChannelInfo: React.FC<{ channelData: ChannelData | null }> = ({ channelData }) => {
-    
+const ChannelInfo: React.FC<ChannelInfoProps> = ({ username }) => {
+    const [channelData, setChannelData] = useState<ChannelData | null>(null)
+    const [isLoadingChannelData, setIsLoadingChannelData] = useState<boolean>(true)
+
+    useEffect(() => {
+        const fetchChannelData = async () => {
+            try {
+                const response = await api.get(`/user/channel/${username}`);
+                setChannelData(response.data?.data)
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log('Error fetching channel data in layout:', error.response?.data?.message || error.message);
+                } else {
+                    console.log('Unexpected error while fetching channel data in layout:', error);
+                }
+            } finally {
+                setIsLoadingChannelData(false)
+            }
+        }
+
+        fetchChannelData()
+    }, [username])
+
     return (
         <div className='w-full pt-3 pb-3'>
             <div className='w-full h-32 sm:h-56 relative'>
@@ -30,19 +60,32 @@ const ChannelInfo: React.FC<{ channelData: ChannelData | null }> = ({ channelDat
                 </div>
             </div>
             {
-                channelData ? (
+                isLoadingChannelData ? (
+                    <div className='mt-16 sm:mt-[100px] px-4 sm:px-8 duration-200'>
+                        <div className="flex flex-col gap-2">
+                            <div className="animate-pulse bg-gray-300 w-28 h-5 rounded-lg"></div>
+                            <div className="animate-pulse bg-gray-300 w-36 h-3 rounded-lg"></div>
+                            <div className="animate-pulse bg-gray-300 w-36 h-2 rounded-lg"></div>
+                        </div>
+                    </div>
+                ) : (channelData ? (
                     <div className='mt-16 sm:mt-[100px] px-4 sm:px-8 duration-200'>
                         <h1 className='text-2xl sm:text-3xl font-bold'>{channelData?.fullName}</h1>
-                        <p className='text-sm text-gray-600'>{channelData?.username}</p>
-                        <div className='text-sm text-gray-700'>
-                            <span>{channelData?.subscribersCount} subscribers</span> • <span>Subscribed to {channelData?.channelsSubscribedToCount} channels</span>
+                        <div className='flex flex-col sm:flex-row gap-2 sm:gap-5'>
+                            <div>
+                                <p className='text-sm text-gray-600'>{channelData?.username}</p>
+                                <div className='text-sm text-gray-700'>
+                                    <span>{channelData?.subscribersCount} subscribers</span> • <span>Subscribed to {channelData?.channelsSubscribedToCount} channels</span>
+                                </div>
+                            </div>
+                            <SubscriptionForm channelId={channelData._id} isSubscribed={channelData.isSubscribed} />
                         </div>
                     </div>
                 ) : (
                     <div className='mt-16 sm:mt-[100px] px-4 sm:px-8 duration-200'>
                         <h1 className='text-2xl sm:text-3xl font-semibold'>Channel not found</h1>
                     </div>
-                )
+                ))
             }
         </div>
     )
