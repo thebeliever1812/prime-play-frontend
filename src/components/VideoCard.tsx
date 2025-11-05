@@ -25,7 +25,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 <Image
                     src={thumbnail}
                     alt={title}
-                    layout='fill'
+                    fill
                     objectFit='cover'
                     className='rounded-lg'
                     loading='lazy'
