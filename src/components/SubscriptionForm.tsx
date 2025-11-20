@@ -18,7 +18,6 @@ interface FormInputs {
 const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) => {
     const [showLoginPopup, setShowLoginPopup] = useState(false)
     const user = useAppSelector(state => state.user.user)
-    // const isLoadingUser = useAppSelector(state => state.user.loading)
     const isAuthenticated = !!user
 
     const {
@@ -59,7 +58,7 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
     }
 
     return (
-        <>
+        <div className='relative w-full'>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <input
                     type="hidden"
@@ -67,7 +66,7 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
                 />
                 <button
                     type="submit"
-                    className={`w-full max-w-28  flex justify-center items-center  px-3 py-2 rounded-md border-[1px] border-[#4F46E5] hover:scale-105 transition-all duration-200 cursor-pointer ${currentState ? "text-[#4F46E5] bg-white" : "text-white bg-[#4F46E5]"} `}
+                    className={`w-full max-w-28 flex justify-center items-center  px-3 py-2 rounded-md border-[1px] border-[#4F46E5] hover:scale-105 transition-all duration-200 cursor-pointer ${currentState ? "text-[#4F46E5] bg-white" : "text-white bg-[#4F46E5]"} `}
                 >
                     {currentState ? "Subscribed" : "Subscribe"}
                 </button>
@@ -77,7 +76,7 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
                     <>
                         <div className='fixed w-full h-full top-0 left-0 bg-black/40 z-[50] cursor-pointer' onClick={() => setShowLoginPopup(false)}>
                         </div>
-                        <div className='w-full max-w-lg p-4 rounded-xl bg-white z-[55]'>
+                        <div className='absolute top-12 w-full max-w-lg p-4 rounded-xl bg-white z-[55]'>
                             <h2 className='text-lg font-semibold mb-2'>Login Required</h2>
                             <p className='mb-4'>You need to be logged in to subscribe to channels.</p>
                             <div className='mb-4'>
@@ -95,7 +94,7 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
                     </>
                 )
             }
-        </>
+        </div>
     )
 }
 

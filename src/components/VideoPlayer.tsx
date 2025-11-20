@@ -3,7 +3,7 @@ import { api } from '@/utils/api';
 import axios from 'axios';
 import { Loader2, Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
-import { Container, CustomLoader } from './index';
+import { Container, CustomLoader, SubscriptionForm } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -52,6 +52,18 @@ interface Comment {
     ownerDetails: CommentOwner;
 }
 
+interface ChannelData {
+    _id: string;
+    avatar: string;
+    channelsSubscribedToCount: number;
+    coverImage: string;
+    email: string;
+    fullName: string;
+    isSubscribed: boolean;
+    subscribersCount: number;
+    username: string;
+}
+
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
     const [videoData, setVideoData] = useState<VideoData | null>(null);
     const [loadingVideo, setLoadingVideo] = useState<boolean>(true);
@@ -61,6 +73,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
     const [postingComment, setPostingComment] = useState(false);
     const [comments, setComments] = useState<Comment[]>([])
     const [loadingComments, setLoadingComments] = useState<boolean>(true);
+    const [isLoadingChannelData, setIsLoadingChannelData] = useState<boolean>(true)
+    const [channelData, setChannelData] = useState<ChannelData | null>(null)
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -171,6 +185,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         fetchComments();
     }, [id]);
 
+    // Subscription details k liy
+    useEffect(() => {
+        const fetchChannelData = async () => {
+            try {
+                const response = await api.get(`/user/channel/${user?.username}`);
+                setChannelData(response.data?.data)
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log('Error fetching channel data in layout:', error.response?.data?.message || error.message);
+                } else {
+                    console.log('Unexpected error while fetching channel data in layout:', error);
+                }
+            } finally {
+                setIsLoadingChannelData(false)
+            }
+        }
+
+        if (isAuthenticated) {
+            fetchChannelData()
+        }
+    }, [user?.username, isAuthenticated])
+
     if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">
             <CustomLoader />
@@ -225,19 +261,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                     <div className='space-y-2'>
                         <h1 className='text-2xl font-extrabold text-[#1E293B]'>{videoData.title}</h1>
                         {/* Profile details */}
-                        <div className='w-full max-w-sm flex items-center gap-2'>
-                            <Image
-                                src={videoData.owner.avatar}
-                                alt={videoData.owner.username}
-                                width={45}
-                                height={45}
-                                className='rounded-full cursor-pointer'
-                                onClick={() => router.push(`/channel/${videoData.owner.username}`)}
-                            />
-                            <div>
-                                <p className='font-medium'>{videoData.owner.fullName}</p>
-                                <p className='text-sm text-gray-600'>{videoData.owner.subscribersCount} subscribers</p>
+                        <div className='w-full flex gap-5 items-center'>
+                            <div className='flex w-full max-w-[200px] items-center gap-2'>
+                                <Image
+                                    src={videoData.owner.avatar}
+                                    alt={videoData.owner.username}
+                                    width={45}
+                                    height={45}
+                                    className='rounded-full cursor-pointer'
+                                    onClick={() => router.push(`/channel/${videoData.owner.username}`)}
+                                />
+                                <div>
+                                    <p className='font-medium'>{videoData.owner.fullName}</p>
+                                    <p className='text-sm text-gray-600'>{videoData.owner.subscribersCount} subscribers</p>
+                                </div>
                             </div>
+                            <SubscriptionForm isSubscribed={channelData?.isSubscribed || false} channelId={user?._id} />
                         </div>
                     </div>
                     <div className={`w-full text-sm text-[#475569] shadow-[0_10px_10px_rgba(0,0,0,0.1)] p-2 rounded-md space-y-1.5 ${videoData.description.length > 130 && "cursor-pointer"}`} onClick={() => setShowFullDescription(!showFullDescription)} >
@@ -290,7 +329,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                     </form>
                 </div>
 
-                <div className='w-full h-10 mt-3 space-y-3'>
+                <div className='w-full mt-3 space-y-3'>
                     {
                         comments.length > 0 ?
                             comments.map((comment) => (
