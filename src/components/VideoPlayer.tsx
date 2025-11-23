@@ -3,7 +3,7 @@ import { api } from '@/utils/api';
 import axios from 'axios';
 import { Loader2, Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
-import { Container, CustomLoader, SubscriptionForm } from './index';
+import { Container, CustomLoader, LikeForm, SubscriptionForm } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -35,6 +35,8 @@ interface VideoData {
     views: number;
     duration: number;
     owner: Owner;
+    isLiked: boolean;
+    likesCount: number
 }
 
 type CommentFormInput = z.infer<typeof CommentSchema>;
@@ -62,6 +64,7 @@ interface ChannelData {
     isSubscribed: boolean;
     subscribersCount: number;
     username: string;
+    
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
@@ -277,6 +280,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                                 </div>
                             </div>
                             <SubscriptionForm isSubscribed={channelData?.isSubscribed || false} channelId={user?._id} />
+                        </div>
+                        <div className='ml-2 mt-4 flex gap-1 items-center'>
+                            <LikeForm videoId={id} isLiked={videoData.isLiked} />
+                            <span className='flex items-center text-[#1E293B] text-[14px] font-semibold'>{videoData.likesCount}</span>
                         </div>
                     </div>
                     <div className={`w-full text-sm text-[#475569] shadow-[0_10px_10px_rgba(0,0,0,0.1)] p-2 rounded-md space-y-1.5 ${videoData.description.length > 130 && "cursor-pointer"}`} onClick={() => setShowFullDescription(!showFullDescription)} >

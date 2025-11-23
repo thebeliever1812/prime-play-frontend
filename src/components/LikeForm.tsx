@@ -1,22 +1,24 @@
 "use client"
-import { api } from '@/utils/api';
-import axios from 'axios';
+import { useAppSelector } from '@/lib/hook'
+import { api } from '@/utils/api'
+import axios from 'axios'
+import { ThumbsUp } from 'lucide-react'
+import Link from 'next/link'
 import React, { useState } from 'react'
-import { useForm } from "react-hook-form"
-import { useAppSelector } from '@/lib/hook';
-import Link from 'next/link';
+import { useForm } from 'react-hook-form'
 
-interface SubscriptionFormProps {
-    isSubscribed: boolean;
+interface LikeFormProps {
+    isLiked: boolean;
     channelId?: string;
+    videoId: string;
 }
 
 interface FormInputs {
-    subscribedStatus: boolean
+    likeStatus: boolean
 }
 
-const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) => {
-    const [showLoginPopup, setShowLoginPopup] = useState(false)
+const LikeForm = ({ isLiked, channelId, videoId }: LikeFormProps) => {
+    const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false)
     const user = useAppSelector(state => state.user.user)
     const isAuthenticated = !!user
 
@@ -26,25 +28,23 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
         setValue,
         handleSubmit,
     } = useForm<FormInputs>({
-        defaultValues: { subscribedStatus: isSubscribed },
+        defaultValues: { likeStatus: isLiked },
     })
 
-    const currentState = watch("subscribedStatus")
+    const currentState = watch("likeStatus")
 
     const onSubmit = async (data: FormInputs) => {
-        const previousState = data.subscribedStatus;
+        const previousState = data.likeStatus;
 
         // Optimistically update UI
         if (isAuthenticated) {
-            setValue("subscribedStatus", !previousState);
+            setValue("likeStatus", !previousState);
             try {
-                const response = await api.post('/subscribe', { subscribe: !previousState, channelId });
-
-                if (!response.data.success) {
-                    throw new Error("Failed to update subscription");
-                }
+                const response = await api.post(`/like/video/${videoId}`, {
+                    isLiked: !previousState
+                })
             } catch (error) {
-                setValue("subscribedStatus", previousState)
+                setValue("likeStatus", previousState)
                 if (axios.isAxiosError(error)) {
                     console.error('Error subscribing channel:', error.response?.data?.message || error.message);
                 } else {
@@ -57,17 +57,17 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
     }
 
     return (
-        <div className='relative w-full'>
+        <div className='relative'>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <input
                     type="hidden"
-                    {...register("subscribedStatus")}
+                    {...register("likeStatus")}
                 />
                 <button
                     type="submit"
-                    className={`w-full max-w-28 flex justify-center items-center  px-3 py-2 rounded-md border-[1px] border-[#4F46E5] hover:scale-105 transition-all duration-200 cursor-pointer ${currentState ? "text-[#4F46E5] bg-white" : "text-white bg-[#4F46E5]"} `}
+                    className='flex items-center'
                 >
-                    {currentState ? "Subscribed" : "Subscribe"}
+                    {currentState ? <ThumbsUp className='fill-[#4F46E5] text-[#4F46E5] active:scale-110 duration-150' /> : <ThumbsUp />}
                 </button>
             </form>
             {
@@ -77,7 +77,7 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
                         </div>
                         <div className='absolute top-12 w-full max-w-lg p-4 rounded-xl bg-white z-[55]'>
                             <h2 className='text-lg font-semibold mb-2'>Login Required</h2>
-                            <p className='mb-4'>You need to be logged in to subscribe to channels.</p>
+                            <p className='mb-4'>You need to be logged in to like the video.</p>
                             <div className='mb-4'>
                                 <Link href='/login' className='text-blue-600 underline' onClick={() => setShowLoginPopup(false)}>Click here to login</Link>
                             </div>
@@ -97,4 +97,4 @@ const SubscriptionForm = ({ isSubscribed, channelId }: SubscriptionFormProps) =>
     )
 }
 
-export default SubscriptionForm
+export default LikeForm

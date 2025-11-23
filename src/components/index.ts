@@ -12,6 +12,7 @@ import FetchChannelVideo from "./FetchChannelVideo";
 import CustomLoader from "./CustomLoader";
 import AboutChannelOwner from "./AboutChannelOwner";
 import SubscriptionForm from "./SubscriptionForm";
+import LikeForm from "./LikeForm";
 
 export {
     Container,
@@ -28,4 +29,5 @@ export {
     CustomLoader,
     AboutChannelOwner,
     SubscriptionForm,
+    LikeForm,
 };
