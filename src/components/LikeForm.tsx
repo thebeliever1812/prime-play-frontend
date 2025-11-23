@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form'
 
 interface LikeFormProps {
     isLiked: boolean;
-    channelId?: string;
     videoId: string;
 }
 
@@ -17,7 +16,7 @@ interface FormInputs {
     likeStatus: boolean
 }
 
-const LikeForm = ({ isLiked, channelId, videoId }: LikeFormProps) => {
+const LikeForm = ({ isLiked, videoId }: LikeFormProps) => {
     const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false)
     const user = useAppSelector(state => state.user.user)
     const isAuthenticated = !!user
@@ -40,7 +39,7 @@ const LikeForm = ({ isLiked, channelId, videoId }: LikeFormProps) => {
         if (isAuthenticated) {
             setValue("likeStatus", !previousState);
             try {
-                const response = await api.post(`/like/video/${videoId}`, {
+                await api.post(`/like/video/${videoId}`, {
                     isLiked: !previousState
                 })
             } catch (error) {
