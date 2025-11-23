@@ -64,7 +64,7 @@ const LikeForm = ({ isLiked, videoId }: LikeFormProps) => {
                 />
                 <button
                     type="submit"
-                    className='flex items-center'
+                    className='flex items-center cursor-pointer'
                 >
                     {currentState ? <ThumbsUp className='fill-[#4F46E5] text-[#4F46E5] active:scale-110 duration-150' /> : <ThumbsUp />}
                 </button>
@@ -74,7 +74,7 @@ const LikeForm = ({ isLiked, videoId }: LikeFormProps) => {
                     <>
                         <div className='fixed w-full h-full top-0 left-0 bg-black/40 z-[50] cursor-pointer' onClick={() => setShowLoginPopup(false)}>
                         </div>
-                        <div className='absolute top-12 w-full max-w-lg p-4 rounded-xl bg-white z-[55]'>
+                        <div className='fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] max-w-lg p-4 rounded-xl bg-white z-[55]'>
                             <h2 className='text-lg font-semibold mb-2'>Login Required</h2>
                             <p className='mb-4'>You need to be logged in to like the video.</p>
                             <div className='mb-4'>
