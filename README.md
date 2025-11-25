@@ -1,5 +1,12 @@
 # 📺 Prime Play – Video Sharing Platform (Frontend)
 
+![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)
+
+
 Prime Play is a modern YouTube-style video sharing platform that allows users to upload, watch, interact with, and organize videos — built with a powerful and optimized Next.js frontend.
 
 ### ✨ Tagline
@@ -98,14 +105,14 @@ npm run dev
 
 ---
 
-## Deployment
+## 🌐 Deployment
 
 Frontend is deployed on **Vercel**.  
 Ensure the required environment variables are added in Vercel Project Settings.
 
 ---
 
-## License
+## 📝 License
 
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License.
 
@@ -113,7 +120,7 @@ You are free to share, use, and modify the code for non-commercial purposes, wit
 
 ---
 
-## Author
+## 👤 Author
 
 **Basir Ahmad**  
 📧 Email: **basirahmadmalik@gmail.com**  
