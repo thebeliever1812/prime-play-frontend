@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📺 Prime Play – Video Sharing Platform (Frontend)
 
-## Getting Started
+Prime Play is a modern YouTube-style video sharing platform that allows users to upload, watch, interact with, and organize videos — built with a powerful and optimized Next.js frontend.
 
-First, run the development server:
+### ✨ Tagline
+_A fast, scalable, and feature-rich video platform built with a modern MERN web stack._
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Features
+
+- 🎥 **Seamless Video Uploading** – Supports modern formats with smooth Cloudinary integration  
+- 👍 **Interactive Engagement** – Users can like and comment on content  
+- 📌 **Channel Subscriptions** – Follow your favorite creators effortlessly  
+- 🔐 **Secure Login System** – JWT-based verified access  
+- 🕒 **Personal Viewing History** – Automatically tracks previously watched videos
+- 🎥 **Creator Video Manager** – Manage and review all videos authored by the user
+- 🎶 **Custom Playlist Support** – Create and organize playlists with ease
+- 🔎 **Advanced Search Functionality** – Quickly find videos across the platform  
+- ⚡ **Responsive Design** – Smooth, optimized UI across all devices
+
+---
+
+## 🚀 Live Demo
+
+[Visit Prime Play](https://prime-play-frontend.vercel.app)
+
+---
+
+## 🛠 Tech Stack (Frontend)
+
+- **Next.js 14+** – App Router  
+- **TypeScript**  
+- **Tailwind CSS**  
+- **Redux Toolkit**  
+- **React Hook Form**  
+- **Zod (Validation)**  
+
+### Backend & External Services
+- Node.js, Express  
+- MongoDB + Mongoose  
+- Cloudinary  
+- JWT Authentication  
+
+---
+
+## 📂 Folder Structure
+
+```
+prime-play-frontend/
+├── public/
+├── src/
+│   ├── app/
+│   ├── components/
+│   ├── lib/
+│   ├── schemas/
+│   ├── utils/
+│   ├── manifest.json
+│
+├── .env
+├── package.json
+├── next.config.ts
+├── tsconfig.json
+├── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Installation & Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/thebeliever1812/prime-play-frontend.git
+cd prime-play-frontend
+```
 
-## Learn More
+### 2️⃣ Install Dependencies
+```bash
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3️⃣ Create .env File
+```bash
+NEXT_PUBLIC_BACKEND_BASE_URL=""
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4️⃣ Start Development Server
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Frontend is deployed on **Vercel**.  
+Ensure the required environment variables are added in Vercel Project Settings.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## Author
+
+**Basir Ahmad**  
+📧 Email: **basirahmadmalik@gmail.com**  
+🌐 Portfolio: **https://basir-ahmad-portfolio.vercel.app**
