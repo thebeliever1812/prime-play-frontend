@@ -44,6 +44,13 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 
 ---
 
+## 🔗 Backend Repository
+
+You can find the backend source code here:  
+👉 **[Prime Play Backend Repository](https://github.com/thebeliever1812/prime-play)**
+
+---
+
 ## 📂 Folder Structure
 
 ```
@@ -100,7 +107,9 @@ Ensure the required environment variables are added in Vercel Project Settings.
 
 ## License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License.
+
+You are free to share, use, and modify the code for non-commercial purposes, with attribution. Commercial use is strictly prohibited.
 
 ---
 
