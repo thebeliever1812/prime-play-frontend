@@ -13,6 +13,7 @@ import CustomLoader from "./CustomLoader";
 import AboutChannelOwner from "./AboutChannelOwner";
 import SubscriptionForm from "./SubscriptionForm";
 import LikeForm from "./LikeForm";
+import DeletePopUp from "./DeletePopUp";
 
 export {
     Container,
@@ -30,4 +31,5 @@ export {
     AboutChannelOwner,
     SubscriptionForm,
     LikeForm,
+    DeletePopUp,
 };

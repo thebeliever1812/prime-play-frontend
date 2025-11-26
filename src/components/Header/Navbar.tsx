@@ -88,14 +88,15 @@ const Navbar = () => {
         }
     }
 
-    const handleEditUser = async () => {
-
+    const handleDashboard = () => {
+        setShowProfile(false)
+        router.push("/dashboard")
     }
 
     const authenticatedProfileOptions = [
         {
-            option: "Edit",
-            method: handleEditUser
+            option: "Dashboard",
+            method: handleDashboard
         },
         {
             option: "Logout",
