@@ -82,10 +82,10 @@ const Dashboard = () => {
                 const response = await api.get("/user/channel-stats")
 
                 setStats([
-                    { name: "Views", value: response.data.views || 0 },
-                    { name: "Likes", value: response.data.likes || 0 },
-                    { name: "Subscribers", value: response.data.subscribers || 0 },
-                    { name: "Subscriptions", value: response.data.subscriptions || 0 },
+                    { name: "Views", value: response.data.viewsCount || 0 },
+                    { name: "Likes", value: response.data.likesCount || 0 },
+                    { name: "Subscribers", value: response.data.subscribersCount || 0 },
+                    { name: "Subscriptions", value: response.data.subscriptionsCount || 0 },
                 ]);
             }
             catch (error) {
