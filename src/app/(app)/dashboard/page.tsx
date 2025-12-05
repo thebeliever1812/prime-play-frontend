@@ -17,12 +17,16 @@ interface Stats {
 const Dashboard = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false)
     const [channelStatsLoading, setChannelStatsLoading] = useState<boolean>(false)
+    const [mounted, setMounted] = useState<boolean>(false);
+
     const [stats, setStats] = useState<Stats[]>([
         { name: "Views", value: 0 },
         { name: "Likes", value: 0 },
         { name: "Subscribers", value: 0 },
         { name: "Subscriptions", value: 0 },
     ]);
+
+    useEffect(() => setMounted(true), []);
 
     const user = useAppSelector(state => state.user.user)
     const isLoadingUser = useAppSelector(state => state.user.loading)
@@ -80,12 +84,13 @@ const Dashboard = () => {
             setChannelStatsLoading(true)
             try {
                 const response = await api.get("/user/channel-stats")
+                console.log("Channel Stats Response:", response.data);
 
                 setStats([
-                    { name: "Views", value: response.data.viewsCount || 0 },
-                    { name: "Likes", value: response.data.likesCount || 0 },
-                    { name: "Subscribers", value: response.data.subscribersCount || 0 },
-                    { name: "Subscriptions", value: response.data.subscriptionsCount || 0 },
+                    { name: "Views", value: response.data.data.totalViews || 0 },
+                    { name: "Likes", value: response.data.data.totalLikes || 0 },
+                    { name: "Subscribers", value: response.data.data.totalSubscribers || 0 },
+                    { name: "Subscriptions", value: response.data.data.totalSubscriptions || 0 },
                 ]);
             }
             catch (error) {
@@ -101,6 +106,8 @@ const Dashboard = () => {
 
         fetchChannelStats()
     }, [])
+
+    if (!mounted) return null;
 
     if (isLoadingUser) {
         return (
@@ -121,7 +128,7 @@ const Dashboard = () => {
         <Container className='max-w-6xl pt-2'>
             <div className='w-full h-32 sm:h-56 lg:h-72 relative duration-150'>
                 <div className='w-full h-full overflow-hidden relative'>
-                    <Image src={user.coverImage || "/default_cover_image.jpeg"} alt='Cover Image' fill className='object-cover  rounded-lg sm:rounded-2xl' />
+                    <Image src={user.coverImage} alt='Cover Image' fill className='object-cover  rounded-lg sm:rounded-2xl' />
                     <div className='absolute right-0 bottom-0 p-2 flex gap-2 sm:gap-4'>
                         <SquarePen className='text-white cursor-pointer' />
                         <Trash className='text-red-600 cursor-pointer' onClick={() => setShowDeleteConfirm(true)} />
@@ -129,7 +136,7 @@ const Dashboard = () => {
                 </div>
                 {/* Profile Image */}
                 <div className='w-full aspect-square rounded-full max-w-32 sm:max-w-60 lg:max-w-80 absolute top-full left-[50%] -translate-x-[50%] -translate-y-[50%]'>
-                    <Image src={user.avatar || "/default_avatar.png"} alt='Avatar' fill className='object-cover' />
+                    <Image src={user.avatar} alt='Avatar' fill className='object-cover' />
                     <SquarePen className='w-5 sm:w-7 lg:w-10 text-gray-400 cursor-pointer absolute top-full left-1/2 -translate-x-1/2 -translate-y-8 sm:-translate-y-10 lg:-translate-y-11 ' />
                 </div>
 
