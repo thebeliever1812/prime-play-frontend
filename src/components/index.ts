@@ -14,6 +14,8 @@ import AboutChannelOwner from "./AboutChannelOwner";
 import SubscriptionForm from "./SubscriptionForm";
 import LikeForm from "./LikeForm";
 import DeletePopUp from "./DeletePopUp";
+import DashboardLinkItem from "./DashboardLinkItem";
+import StatCard from "./StatCard";
 
 export {
     Container,
@@ -32,4 +34,6 @@ export {
     SubscriptionForm,
     LikeForm,
     DeletePopUp,
+    DashboardLinkItem,
+    StatCard
 };
