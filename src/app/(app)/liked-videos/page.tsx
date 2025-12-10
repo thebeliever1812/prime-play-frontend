@@ -83,17 +83,21 @@ const LikedVideos = () => {
     }
 
     return (
-        <Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
-            {likedVideos.map(video => (<VideoCard
-                key={video._id}
-                _id={video.likedVideo._id}
-                title={video.likedVideo.title}
-                description={video.likedVideo.description}
-                uploadDate={video.likedVideo.createdAt}
-                thumbnail={video.likedVideo.thumbnail}
-                views={video.likedVideo.views}
-            />)
-            )}
+        <Container className="max-w-6xl py-4 ">
+            <h1 className="text-2xl sm:text-3xl font-semibold mb-4 text-[#1E293B]">Liked Videos</h1>
+            <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
+                {likedVideos.map(video => (<VideoCard
+                    key={video._id}
+                    _id={video.likedVideo._id}
+                    title={video.likedVideo.title}
+                    description={video.likedVideo.description}
+                    uploadDate={video.likedVideo.createdAt}
+                    thumbnail={video.likedVideo.thumbnail}
+                    views={video.likedVideo.views}
+                />)
+                )}
+            </div>
+            
         </Container>
     )
 }

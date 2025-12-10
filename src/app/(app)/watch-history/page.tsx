@@ -26,7 +26,12 @@ interface Video {
 
 const WatchHistory = () => {
     const [videos, setVideos] = useState<Video[]>([]);
-    const [loadingVideos, setLoadingVideos] = useState(true);
+    const [loadingVideos, setLoadingVideos] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const isLoadingUser = useAppSelector((state) => state.user.loading);
     const user = useAppSelector((state) => state.user.user);
@@ -34,6 +39,7 @@ const WatchHistory = () => {
 
     useEffect(() => {
         const fetchVideos = async () => {
+            setLoadingVideos(true);
             try {
                 const response = await api.get('/user/history');
                 setVideos(response.data?.data || []);
@@ -56,6 +62,14 @@ const WatchHistory = () => {
             setLoadingVideos(false);
         }
     }, [isLoadingUser, isAuthenticated]);
+
+    if (!isMounted) {
+        return (
+            <Container className="max-w-6xl flex justify-center items-center">
+                <CustomLoader />
+            </Container>
+        );
+    }
 
     if (isLoadingUser) {
         return (<Container className="max-w-6xl flex justify-center items-center">
@@ -88,6 +102,7 @@ const WatchHistory = () => {
 
     return (
         <Container className="max-w-5xl py-4">
+            <h1 className="text-2xl sm:text-3xl font-semibold mb-4 text-[#1E293B]">Watch History</h1>
             {videos.map((video) => (
                 <div key={video._id} className="mb-4">
                     <WatchHistoryVideoCard
@@ -96,6 +111,7 @@ const WatchHistory = () => {
                         thumbnail={video.thumbnail}
                         views={video.views}
                         fullName={video.owner.fullName}
+                        setVideos={setVideos}
                     />
                 </div>
             ))}
