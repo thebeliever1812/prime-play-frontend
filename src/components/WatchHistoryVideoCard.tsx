@@ -39,7 +39,7 @@ const WatchHistoryVideoCard: React.FC<WatchHistoryVideoCardProps> = ({ _id, titl
     const [showOptions, setShowOptions] = useState<boolean>(false);
 
     useEffect(() => {
-        let body = document.body
+        const body = document.body
         if (showOptions) {
             body.style.position = "fixed";
             body.style.top = "0";
