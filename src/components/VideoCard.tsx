@@ -1,8 +1,22 @@
 "use client"
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
+import { useAppSelector } from '@/lib/hook';
+import { api } from '@/utils/api';
+import axios from 'axios';
+
+interface Video {
+    _id: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    createdAt: string;
+    views: number;
+    owner: string;
+}
 
 interface VideoCardProps {
     _id?: string;
@@ -13,12 +27,36 @@ interface VideoCardProps {
     thumbnail: string;
     views: number;
     avatarUrl?: string;
+    ownerId?: string
+    setVideos?: React.Dispatch<React.SetStateAction<Video[]>>;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username, ownerId, setVideos }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
-
+    const [showOptions, setShowOptions] = useState<boolean>(false);
     const router = useRouter();
+
+    const user = useAppSelector(state => state.user.user)
+
+    const isAuthorised = user?._id === ownerId
+
+    const handleDeleteMyVideo = async () => {
+        try {
+            const videoId = _id;
+            await api.delete(`/video/delete-video/${videoId}`);
+            if (setVideos) {
+                setVideos(prevVideos => prevVideos.filter(video => video._id !== videoId));
+            }
+            setShowOptions(false);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.log('Error removing video from watch history:', error.response?.data?.message || error.message);
+            } else {
+                console.log('Unexpected error while removing video from watch history:', error);
+            }
+        }
+    }
+
     return (
         <div className='w-full max-w-md rounded-lg shadow-md p-1 cursor-pointer hover:shadow-xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
             <div className='w-full aspect-video rounded-lg relative overflow-hidden '>
@@ -36,7 +74,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 </div>
             </div>
             {/* Video details */}
-            <div className='w-full px-2 flex items-start gap-2 mt-4 mb-2'>
+            <div className='w-full px-2 flex items-start gap-1 sm:gap-2 mt-4 mb-2'>
                 {avatarUrl && (
                     <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0' onClick={(e) => {
                         e.stopPropagation()
@@ -50,7 +88,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                         />
                     </div>
                 )}
-                <div>
+                <div className=''>
                     <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
                     <p className='text-sm text-gray-700'>{description.length > 70 ? `${description.substring(0, 70)}...` : description}</p>
                     <div className='w-full flex items-center justify-between mt-2'>
@@ -58,6 +96,30 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                         <span className='text-xs text-gray-500'>{views} views</span>
                     </div>
                 </div>
+
+                {
+                    isAuthorised &&
+                    <button className='mt-1 sm:mt-3 relative cursor-pointer' onClick={(e) => {
+                        e.stopPropagation()
+                        setShowOptions(prev => !prev)
+                    }}>
+                        <EllipsisVertical />
+                        {
+                            showOptions &&
+                            <>
+                                <div className='fixed w-full h-full bg-black/40 top-0 left-0 z-50 '>
+                                </div>
+                                <ul className='w-64 sm:w-72 text-sm sm:text-base absolute bg-[#F8FAFC] z-50 translate-y-1 right-0 rounded-md px-1.5 sm:px-3 py-1 flex flex-col items-start space-y-1 duration-150 ease-in' >
+                                    <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 sm:gap-2 items-center justify-start'><Pencil className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Edit</li>
+                                    <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 items-center justify-start sm:gap-2' onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteMyVideo();
+                                    }}><Trash2 className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Delete</li>
+                                </ul>
+                            </>
+                        }
+                    </button>
+                }
             </div>
         </div>
     )

@@ -13,6 +13,7 @@ interface Video {
     thumbnail: string;
     createdAt: string;
     views: number;
+    owner: string;
 }
 
 const MyVideos = () => {
@@ -78,17 +79,22 @@ const MyVideos = () => {
     }
 
     return (
-        <Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
-            {videos.map(video => (<VideoCard
-                key={video._id}
-                _id={video._id}
-                title={video.title}
-                description={video.description}
-                uploadDate={video.createdAt}
-                thumbnail={video.thumbnail}
-                views={video.views}
-            />)
-            )}
+        <Container className="max-w-6xl py-4">
+            <h1 className='text-2xl sm:text-3xl font-semibold mb-4 text-[#1E293B]'>My Videos</h1>
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center'>
+                {videos.map(video => (<VideoCard
+                    key={video._id}
+                    _id={video._id}
+                    title={video.title}
+                    description={video.description}
+                    uploadDate={video.createdAt}
+                    thumbnail={video.thumbnail}
+                    views={video.views}
+                    ownerId={video.owner}
+                    setVideos={setVideos}
+                />)
+                )}
+            </div>
         </Container>
     )
 }

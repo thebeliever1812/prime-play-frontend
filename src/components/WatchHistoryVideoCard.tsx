@@ -97,7 +97,7 @@ const WatchHistoryVideoCard: React.FC<WatchHistoryVideoCardProps> = ({ _id, titl
             </div>
             <div className='w-full flex justify-between gap-2 items-start'>
                 <div className='space-y-1 sm:space-y-3 flex flex-col justify-between sm:justify-start mt-1 sm:mt-3 '>
-                    <h2 className='font-semibold text-md sm:text-xl md:text-2xl lg:text-3xl text-[#1E293B] duration-200'>{title.length > 35 ? title.slice(0, 35) + "..." : title}</h2>
+                    <h2 className='font-semibold text-md sm:text-xl md:text-2xl lg:text-3xl text-[#1E293B] duration-200'>{title.length > 30 ? title.slice(0, 30) + "..." : title}</h2>
                     <div className=''>
                         <p className='text-xs sm:text-sm md:text-base lg:text-lg text-gray-600'>{fullName}</p>
                         <p className='text-xs sm:text-sm md:text-base  text-gray-600'>{views} views</p>
