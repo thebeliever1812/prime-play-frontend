@@ -1,7 +1,7 @@
 "use client";
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader2, Maximize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Maximize, Minimize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
 import { Container, CustomLoader, LikeForm, SubscriptionForm } from './index';
 import Image from 'next/image';
@@ -64,7 +64,7 @@ interface ChannelData {
     isSubscribed: boolean;
     subscribersCount: number;
     username: string;
-    
+
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
@@ -78,8 +78,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
     const [loadingComments, setLoadingComments] = useState<boolean>(true);
     const [isLoadingChannelData, setIsLoadingChannelData] = useState<boolean>(true)
     const [channelData, setChannelData] = useState<ChannelData | null>(null)
+    const [fullscreen, setFullscreen] = useState<boolean>(false)
+    const [showCustomControls, setShowCustomControls] = useState<boolean>(true);
+    const [forwardIcon, setForwardIcon] = useState<boolean>(false);
+    const [rewindIcon, setRewindIcon] = useState<boolean>(false);
+    const [currentVideoTime, setCurrentVideoTime] = useState<string>('00:00');
+    const [videoPercentage, setVideoPercentage] = useState<number>(0);
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const playerRef = useRef<HTMLDivElement | null>(null);
+
+    const hideTimer = useRef<NodeJS.Timeout | null>(null);
+
+    const forwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const rewindTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const progressRef = useRef<HTMLDivElement | null>(null);
 
     const user = useAppSelector((state) => state.user.user)
     const isAuthenticated = !!user
@@ -103,35 +117,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         }
         fetchVideo();
     }, [id]);
-
-    const togglePlay = () => {
-        if (!videoRef.current) return;
-        if (videoRef.current.paused) {
-            videoRef.current.play();
-            setIsPlaying(true);
-        } else {
-            videoRef.current.pause();
-            setIsPlaying(false);
-        }
-    };
-
-    const toggleMute = () => {
-        if (!videoRef.current) return;
-        videoRef.current.muted = !videoRef.current.muted;
-        setIsMuted(videoRef.current.muted);
-    };
-
-    const handleFullscreen = () => {
-        if (videoRef.current?.requestFullscreen) videoRef.current.requestFullscreen();
-    };
-
-    const restartVideo = () => {
-        if (videoRef.current) {
-            videoRef.current.currentTime = 0;
-            videoRef.current.play();
-            setIsPlaying(true);
-        }
-    };
 
     const {
         register,
@@ -210,6 +195,155 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         }
     }, [user?.username, isAuthenticated])
 
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        video.muted = true; // must be set before play()
+        video.play().catch(() => {
+            console.log("Autoplay blocked");
+        });
+    }, []);
+
+    const togglePlay = () => {
+        if (!videoRef.current) return;
+        if (videoRef.current.paused) {
+            videoRef.current.play();
+            setIsPlaying(true);
+        } else {
+            videoRef.current.pause();
+            setIsPlaying(false);
+        }
+    };
+
+    const toggleMute = () => {
+        if (!videoRef.current) return;
+        videoRef.current.muted = !videoRef.current.muted;
+        setIsMuted(videoRef.current.muted);
+    };
+
+    const handleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            playerRef.current?.requestFullscreen();
+            setFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setFullscreen(false);
+        }
+    };
+
+    const restartVideo = () => {
+        if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+    };
+
+    const showControlsTemporarily = () => {
+        setShowCustomControls(true);
+
+        if (hideTimer.current) {
+            clearTimeout(hideTimer.current);
+        }
+
+        hideTimer.current = setTimeout(() => {
+            if (isPlaying) {
+                setShowCustomControls(false);
+            }
+        }, 2500);
+    };
+
+    useEffect(() => {
+        if (!isPlaying) {
+            setShowCustomControls(true);
+        }
+        hideTimer.current = setTimeout(() => {
+            if (isPlaying) {
+                setShowCustomControls(false);
+            }
+        }, 2500);
+
+        return () => {
+            if (hideTimer.current) {
+                clearTimeout(hideTimer.current);
+            }
+        };
+    }, [isPlaying]);
+
+    useEffect(() => {
+        const handleKeyboardListners = (e: KeyboardEvent) => {
+            // Prevent page scroll on space
+            if (e.code === "Space") {
+                e.preventDefault();
+            }
+
+            if (!videoRef.current) return;
+
+            switch (e.code) {
+                case "Space":
+                    togglePlay();
+                    break;
+
+                case "ArrowRight":
+                    setForwardIcon(true);
+
+                    if (forwardTimeoutRef.current) {
+                        clearTimeout(forwardTimeoutRef.current);
+                    }
+                    forwardTimeoutRef.current = setTimeout(() => setForwardIcon(false), 500);
+                    videoRef.current.currentTime += 10;
+                    break;
+
+                case "ArrowLeft":
+                    setRewindIcon(true);
+                    if (rewindTimeoutRef.current) {
+                        clearTimeout(rewindTimeoutRef.current);
+                    }
+                    rewindTimeoutRef.current = setTimeout(() => setRewindIcon(false), 500);
+                    videoRef.current.currentTime -= 10;
+                    break;
+
+                case "KeyM":
+                    toggleMute();
+                    break;
+
+                case "KeyF":
+                    handleFullscreen();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        window.addEventListener("keydown", handleKeyboardListners)
+
+        return () => window.removeEventListener("keydown", handleKeyboardListners)
+    }, [togglePlay, toggleMute])
+
+    function formatTime(seconds: number) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+
+        return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function videoProgressInPercentage(currentTime: number, duration: number) {
+        return (currentTime / duration) * 100;
+    }
+
+    const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!videoRef.current || !progressRef.current) return;
+
+        const rect = progressRef.current.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = clickX / rect.width;
+
+        videoRef.current.currentTime =
+            percentage * videoRef.current.duration;
+    };
+
+
     if (loadingVideo) {
         return (<Container className="max-w-6xl flex justify-center items-center">
             <CustomLoader />
@@ -221,7 +355,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         <Container className="max-w-5xl py-4 space-y-4">
             {videoData ? (
                 <>
-                    <div className='flex justify-center items-center aspect-video w-full  mx-auto rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.1)] flex-col gap-4 bg-white relative'>
+                    <div
+                        ref={playerRef}
+                        onMouseMove={showControlsTemporarily}
+                        onTouchStart={showControlsTemporarily}
+                        className='flex justify-center items-center aspect-video w-full mx-auto rounded-2xl shadow-[0_0_10px_rgba(0,0,0,0.1)] flex-col gap-4 bg-white relative'
+                    >
                         <video
                             key={videoData._id}
                             src={videoData.videoFile}
@@ -230,35 +369,59 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                             autoPlay
                             muted
                             playsInline
+                            controls={false}
                             onPlay={() => setIsPlaying(true)}
                             onPause={() => setIsPlaying(false)}
                             onEnded={() => setIsPlaying(false)}
-                            onLoadedMetadata={() => {
-                                // Try autoplay programmatically too
-                                videoRef.current?.play().catch(() => {
-                                    console.log("Autoplay blocked, waiting for user interaction.");
-                                });
+                            onTimeUpdate={() => {
+                                if (videoRef.current) {
+                                    const formattedTime = formatTime(videoRef.current?.currentTime || 0);
+                                    setVideoPercentage(videoProgressInPercentage(videoRef.current.currentTime, videoData.duration));
+                                    setCurrentVideoTime(formattedTime);
+                                }
                             }}
                         />
                         {/* Custom Controls */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-3 flex items-center justify-between text-white rounded-b-2xl">
-                            <div className="flex items-center gap-3">
-                                <button onClick={togglePlay}>
-                                    {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-                                </button>
+                        <div className={`absolute bottom-0 left-0 right-0 transition-opacity duration-300 ${showCustomControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                            <div className={`relative bg-black/60 px-3 py-1.5 sm:py-3 text-white rounded-b-2xl `}>
+                                <div className='flex items-center justify-between'>
+                                    <div className="flex items-center gap-3">
+                                        <button onClick={togglePlay} className='cursor-pointer'>
+                                            {isPlaying ? <Pause className='w-4 sm:w-6' /> : <Play className='w-4 sm:w-6' />}
+                                        </button>
 
-                                <button onClick={toggleMute}>
-                                    {isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />}
-                                </button>
+                                        <button onClick={toggleMute} className='cursor-pointer'>
+                                            {isMuted ? <VolumeX className='w-4 sm:w-6' /> : <Volume2 className='w-4 sm:w-6' />}
+                                        </button>
 
-                                <button onClick={restartVideo}>
-                                    <RotateCcw size={22} />
-                                </button>
+                                        <button onClick={restartVideo} className='cursor-pointer'>
+                                            <RotateCcw className='w-4 sm:w-6' />
+                                        </button>
+
+                                        <span className='text-sm sm:text-base'>
+                                            {`${currentVideoTime}/${formatTime(videoData.duration)}`}
+                                        </span>
+                                    </div>
+
+                                    <button onClick={handleFullscreen} className='cursor-pointer'>
+                                        {
+                                            fullscreen ? <Minimize className='w-4 sm:w-6' /> : <Maximize className='w-4 sm:w-6' />
+                                        }
+                                    </button>
+                                </div>
                             </div>
-
-                            <button onClick={handleFullscreen}>
-                                <Maximize size={22} />
-                            </button>
+                            {/* Progress Bar */}
+                            <div className='absolute -top-1 sm:-top-1.5 bg-gray-400/25 h-1 sm:h-1.5 rounded-t-lg w-full z-40 cursor-pointer' ref={progressRef}
+                                onClick={handleSeek}>
+                                <div className="transition-all h-1 sm:h-1.5 rounded-r-full bg-[#4F46E5] duration-250 ease-linear z-50" style={{ width: `${videoPercentage}%` }}>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='absolute top-1/2 left-2/3 -translate-y-1/2'>
+                            <Image src="/forward_icon.png" alt="Forward Icon" width={50} height={50} className={`${forwardIcon ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`} />
+                        </div>
+                        <div className='absolute top-1/2 left-1/3 -translate-y-1/2'>
+                            <Image src="/rewind_icon.png" alt="Rewind Icon" width={50} height={50} className={`${rewindIcon ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`} />
                         </div>
                     </div>
                     <div className='space-y-2'>
@@ -338,7 +501,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
 
                 <div className='w-full mt-3 space-y-3'>
                     {
-                        comments.length > 0 ?
+                        loadingComments ? (
+                            <div className='flex justify-center items-center'>
+                                <Loader2 className='animate-spin' />
+                            </div>
+                        ) : comments.length > 0 ?
                             comments.map((comment) => (
                                 <div key={comment._id} className='flex gap-3 items-start'>
                                     <div className='relative aspect-square w-[30px] sm:w-[40px] duration-150 rounded-full overflow-hidden mt-1'>
