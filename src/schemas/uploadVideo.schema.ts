@@ -17,6 +17,10 @@ export const UploadVideoSchema = z.object({
         .refine(
             (field) => field && field?.[0]?.type.startsWith("image/"),
             "Only image files are allowed"
+        )
+        .refine(
+            (field) => field && field?.[0]?.size <= 10 * 1024 * 1024,
+            "Thumbnail file size must be less than 10 MB"
         ),
     videoFile: z
         .any()
@@ -24,5 +28,9 @@ export const UploadVideoSchema = z.object({
         .refine(
             (field) => field && field?.[0]?.type.startsWith("video/"),
             "Only video files are allowed"
+        )
+        .refine(
+            (field) => field && field?.[0]?.size <= 100 * 1024 * 1024,
+            "Video file size must be less than 100 MB"
         ),
 });
