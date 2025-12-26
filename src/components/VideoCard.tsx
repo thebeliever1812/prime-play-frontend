@@ -21,6 +21,7 @@ interface Video {
 interface VideoCardProps {
     _id?: string;
     username?: string
+    fullName?: string;
     title: string;
     description: string;
     uploadDate: string;
@@ -31,7 +32,7 @@ interface VideoCardProps {
     setVideos?: React.Dispatch<React.SetStateAction<Video[]>>;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username, ownerId, setVideos }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const router = useRouter();
@@ -90,7 +91,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 )}
                 <div className=''>
                     <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
-                    <p className='text-sm text-gray-700'>{description.length > 70 ? `${description.substring(0, 70)}...` : description}</p>
+                    <span className='text-xs text-gray-500'>{fullName}</span>
                     <div className='w-full flex items-center justify-between mt-2'>
                         <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
                         <span className='text-xs text-gray-500'>{views} views</span>

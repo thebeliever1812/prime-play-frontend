@@ -75,6 +75,7 @@ const AllVideos = () => {
                 views={video.views}
                 avatarUrl={video.ownerInfo.avatar}
                 username={video.ownerInfo.username}
+                fullName={video.ownerInfo.fullName}
             />)
             )}
         </Container>
