@@ -20,11 +20,16 @@ const UploadPage = () => {
         }
     }, [isLoadingUser, isAuthenticated, router])
 
+    if (isLoadingUser) {
+        return (<Container className='w-full flex justify-center items-center'>
+            <CustomLoader />
+        </Container>
+        )
+    }
+
     return (
-        <Container className='relative'>
-            {
-                isLoadingUser ? <CustomLoader /> : <UploadVideoForm />
-            }
+        <Container className=''>
+            <UploadVideoForm />
         </Container>
     )
 }

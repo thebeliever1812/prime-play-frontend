@@ -64,15 +64,22 @@ const UploadVideoForm = () => {
             <form onSubmit={handleSubmit(onSubmit)} encType='multipart/form-data' className='space-y-3'>
                 <FormInput label='Title' name='title' register={register} placeholder='Enter video title' required type='text' error={errors.title?.message} />
 
-                <div className='w-full flex flex-col gap-1 items-start '>
-                    <label htmlFor="description" className="font-medium text-[16px] text-[#1E1E1E]">
-                        Description*
+                <div className='w-full'>
+                    <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-2">
+                        Description<span className="text-red-500 ml-1">*</span>
                     </label>
-                    <textarea id="description" placeholder='Enter video description' {...register("description")} className={`w-full border-[1px] rounded-[10px] px-3 pt-2 outline-none text-[14px] ${errors.description ? "border-red-600" : ""}`} aria-invalid={errors.description ? "true" : "false"} rows={2}>
-                    </textarea>
-                    {
-                        errors.description && <p className="text-red-600 text-xs">{errors.description.message}</p>
-                    }
+                    <textarea
+                        id="description"
+                        placeholder='Enter video description'
+                        {...register("description")}
+                        className={`w-full px-4 py-3 text-sm rounded-lg border-2 transition-all duration-200 resize-none outline-none ${errors.description
+                            ? "border-red-500 bg-red-50 focus:ring-2 focus:ring-red-300"
+                            : "border-gray-200 bg-white hover:border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                            }`}
+                        aria-invalid={errors.description ? "true" : "false"}
+                        rows={4}
+                    />
+                    {errors.description && <p className="mt-1 text-xs font-medium text-red-600">{errors.description.message}</p>}
                 </div>
 
                 <div className='w-full flex flex-col gap-3 sm:flex-row sm:gap-5 duration-200'>
