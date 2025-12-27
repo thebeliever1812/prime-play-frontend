@@ -59,7 +59,7 @@ const EditProfile = () => {
                                 Almost There...
                             </div>
                             <div className="text-gray-700 text-sm  animate-fadeIn">
-                                <p>We're deleting your account...</p>
+                                <p>We&apos;re deleting your account...</p>
                                 <p>Sit tight for just a moment.</p>
                             </div>
                         </div>
