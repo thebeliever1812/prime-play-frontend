@@ -16,6 +16,8 @@ import LikeForm from "./LikeForm";
 import DeletePopUp from "./DeletePopUp";
 import DashboardLinkItem from "./DashboardLinkItem";
 import StatCard from "./StatCard";
+import EditProfileCard from "./EditProfileCard";
+import DeletionSuccessful from "./DeletionSuccessful";
 
 export {
     Container,
@@ -35,5 +37,7 @@ export {
     LikeForm,
     DeletePopUp,
     DashboardLinkItem,
-    StatCard
+    StatCard,
+    EditProfileCard,
+    DeletionSuccessful,
 };

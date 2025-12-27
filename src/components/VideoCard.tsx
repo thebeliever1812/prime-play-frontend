@@ -7,6 +7,7 @@ import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
 import { useAppSelector } from '@/lib/hook';
 import { api } from '@/utils/api';
 import axios from 'axios';
+import DeletePopUp from './DeletePopUp';
 
 interface Video {
     _id: string;
@@ -35,6 +36,8 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
     const [showOptions, setShowOptions] = useState<boolean>(false);
+    const [showDeletePopUp, setShowDeletePopUp] = useState<boolean>(false);
+
     const router = useRouter();
 
     const user = useAppSelector(state => state.user.user)
@@ -59,7 +62,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
     }
 
     return (
-        <div className='w-full max-w-md rounded-lg shadow-md p-1 cursor-pointer hover:shadow-xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
+        <div className='w-full max-w-md rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-1 cursor-pointer hover:shadow-xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
             <div className='w-full aspect-video rounded-lg relative overflow-hidden '>
                 <Image
                     src={thumbnail}
@@ -75,26 +78,28 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 </div>
             </div>
             {/* Video details */}
-            <div className='w-full px-2 flex items-start gap-1 sm:gap-2 mt-4 mb-2'>
-                {avatarUrl && (
-                    <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0' onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(`/channel/${username}`)
-                    }}>
-                        <Image
-                            src={avatarUrl}
-                            alt='Avatar'
-                            fill
-                            className='rounded-full'
-                        />
-                    </div>
-                )}
-                <div className=''>
-                    <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
-                    <span className='text-xs text-gray-500'>{fullName}</span>
-                    <div className='w-full flex items-center justify-between mt-1'>
-                        <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
-                        <span className='text-xs text-gray-500'>{views} views</span>
+            <div className='w-full px-2 flex justify-between items-start gap-1 sm:gap-2 mt-4 mb-2'>
+                <div className='flex items-start gap-1 sm:gap-2 w-full'>
+                    {avatarUrl && (
+                        <div className='w-10 h-10 relative rounded-full overflow-hidden shrink-0' onClick={(e) => {
+                            e.stopPropagation()
+                            router.push(`/channel/${username}`)
+                        }}>
+                            <Image
+                                src={avatarUrl}
+                                alt='Avatar'
+                                fill
+                                className='rounded-full'
+                            />
+                        </div>
+                    )}
+                    <div className=''>
+                        <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
+                        <span className='text-xs text-gray-500'>{fullName}</span>
+                        <div className='w-full flex items-center justify-between mt-1'>
+                            <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
+                            <span className='text-xs text-gray-500'>{views} views</span>
+                        </div>
                     </div>
                 </div>
 
@@ -110,11 +115,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                             <>
                                 <div className='fixed w-full h-full bg-black/40 top-0 left-0 z-50 '>
                                 </div>
-                                <ul className='w-64 sm:w-72 text-sm sm:text-base absolute bg-[#F8FAFC] z-50 translate-y-1 right-0 rounded-md px-1.5 sm:px-3 py-1 flex flex-col items-start space-y-1 duration-150 ease-in' >
+                                <ul className='w-64 sm:w-72 text-sm sm:text-base absolute bg-[#F8FAFC] z-50 translate-y-1 right-0 rounded-md p-1 sm:p-1.5 flex flex-col items-start space-y-1 duration-150 ease-in' >
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 sm:gap-2 items-center justify-start'><Pencil className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Edit</li>
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 items-center justify-start sm:gap-2' onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteMyVideo();
+                                            e.stopPropagation();
+                                            setShowOptions(false);
+                                        setShowDeletePopUp(true);
                                     }}><Trash2 className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Delete</li>
                                 </ul>
                             </>
@@ -122,6 +128,11 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                     </button>
                 }
             </div>
+            {
+                showDeletePopUp && (
+                    <DeletePopUp message='Do you really want to delete this video?' setShow={setShowDeletePopUp} deleteAction={handleDeleteMyVideo} />
+                )
+            }
         </div>
     )
 }

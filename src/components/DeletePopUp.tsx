@@ -9,7 +9,12 @@ interface DeletePopUp {
 const DeletePopUp = ({ setShow, message, deleteAction }: DeletePopUp) => {
     return (
         <div className=''>
-            <div className='fixed bg-black/40 w-full h-full top-0 left-0 z-50 backdrop-blur-[2px]' onClick={() => setShow(false)}>
+            <div className='fixed bg-black/40 w-full h-full top-0 left-0 z-50 backdrop-blur-[2px]' onClick={(e) => {
+                e.stopPropagation()
+                setShow(false)
+            }
+
+            }>
             </div>
             <div
                 className="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] group select-none w-[250px] flex flex-col p-4 items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl z-50"
@@ -36,13 +41,20 @@ const DeletePopUp = ({ setShow, message, deleteAction }: DeletePopUp) => {
                     <div className="p-2 mt-2 text-center space-x-1 flex flex-col gap-3">
                         <button
                             className="bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-150 cursor-pointer"
-                            onClick={() => setShow(false)}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShow(false)
+                            }}
                         >
                             Cancel
                         </button>
                         <button
                             className="bg-red-500 hover:bg-transparent px-5 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 hover:border-red-500 text-white hover:text-red-500 rounded-full transition ease-in duration-150 cursor-pointer"
-                            onClick={() => deleteAction()}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShow(false)
+                                deleteAction()
+                            }}
                         >
                             Delete
                         </button>
