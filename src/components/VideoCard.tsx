@@ -66,7 +66,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                     alt={title}
                     fill
                     objectFit='cover'
-                    className='rounded-lg'
+                    className='rounded-lg object-cover group-hover:scale-105 transition-transform duration-300'
                     loading='lazy'
                 />
                 {/* Play button overlay */}
@@ -92,7 +92,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                 <div className=''>
                     <h2 className='font-semibold text-lg'>{title.length > 55 ? `${title.substring(0, 55)}...` : title}</h2>
                     <span className='text-xs text-gray-500'>{fullName}</span>
-                    <div className='w-full flex items-center justify-between mt-2'>
+                    <div className='w-full flex items-center justify-between mt-1'>
                         <span className='text-xs text-gray-500'>Uploaded: {formattedUploadDate}</span>
                         <span className='text-xs text-gray-500'>{views} views</span>
                     </div>
@@ -113,8 +113,8 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
                                 <ul className='w-64 sm:w-72 text-sm sm:text-base absolute bg-[#F8FAFC] z-50 translate-y-1 right-0 rounded-md px-1.5 sm:px-3 py-1 flex flex-col items-start space-y-1 duration-150 ease-in' >
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 sm:gap-2 items-center justify-start'><Pencil className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Edit</li>
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 items-center justify-start sm:gap-2' onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDeleteMyVideo();
+                                        e.stopPropagation();
+                                        handleDeleteMyVideo();
                                     }}><Trash2 className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Delete</li>
                                 </ul>
                             </>
