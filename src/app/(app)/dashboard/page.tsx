@@ -19,6 +19,8 @@ const Dashboard = () => {
     const [channelStatsLoading, setChannelStatsLoading] = useState<boolean>(false)
     const [mounted, setMounted] = useState<boolean>(false);
 
+    const [userData, setUserData] = useState<any>(null);
+
     const [stats, setStats] = useState<Stats[]>([
         { name: "Views", value: 0 },
         { name: "Likes", value: 0 },
@@ -78,7 +80,7 @@ const Dashboard = () => {
             path: "/edit-profile"
         },
     ]
-
+        
     useEffect(() => {
         const fetchChannelStats = async () => {
             setChannelStatsLoading(true)

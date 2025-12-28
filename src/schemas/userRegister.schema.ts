@@ -19,6 +19,28 @@ export const usernameValidation = z
         "Username must be lowercase and contain only letters, numbers, or underscores (no spaces)"
     );
 
+export const avatarValidation = z
+    .any()
+    .optional()
+    .refine((field) => {
+        if (!field || field.length === 0) {
+            return true;
+        }
+        const file = field[0];
+        return file.type.startsWith("image/");
+    }, "Only image file is allowed");
+
+export const coverImageValidation = z
+    .any()
+    .optional()
+    .refine((field) => {
+        if (!field || field.length === 0) {
+            return true;
+        }
+        const file = field[0];
+        return file.type.startsWith("image/");
+    }, "Only image file is allowed");
+
 export const UserRegisterSchema = z.object({
     username: usernameValidation,
     fullName: z
@@ -26,29 +48,11 @@ export const UserRegisterSchema = z.object({
         .trim()
         .min(2, "Must be at least 2 characters")
         .regex(
-            /^^[A-Za-z]+([ '-][A-Za-z]+)*$/,
-            "Full name must start with a capital letter and can include multiple capitalized words (e.g., 'Basir Ahmad')"
+            /^[A-Za-z]+([ '-][A-Za-z]+)*$/,
+            "Full name can contain only letters and spaces"
         ),
     email: emailValidation,
     password: passwordValidation,
-    avatar: z
-        .any()
-        .optional()
-        .refine((field) => {
-            if (!field || field.length === 0) {
-                return true;
-            }
-            const file = field[0];
-            return file.type.startsWith("image/");
-        }, "Only image file is allowed"),
-    coverImage: z
-        .any()
-        .optional()
-        .refine((field) => {
-            if (!field || field.length === 0) {
-                return true;
-            }
-            const file = field[0];
-            return file.type.startsWith("image/");
-        }, "Only image file is allowed"),
+    avatar: avatarValidation,
+    coverImage: coverImageValidation,
 });
