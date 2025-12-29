@@ -6,12 +6,13 @@ import { api } from '@/utils/api'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const EditProfile = () => {
     const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false)
     const [isDeletingAccount, setIsDeletingAccount] = useState<boolean>(false)
     const [deletionSuccessful, setDeletionSuccessful] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
 
     const user = useAppSelector((state) => state.user.user)
     const isLoadingUser = useAppSelector((state) => state.user.loading)
@@ -21,6 +22,10 @@ const EditProfile = () => {
     const isAuthenticated = !!user
 
     const router = useRouter();
+
+    useEffect(() => {
+        setLoading(false)
+    }, [])
 
     const handleDeleteAccount = async () => {
         setIsDeletingAccount(true);
@@ -73,6 +78,14 @@ const EditProfile = () => {
         return (
             <Container className="max-w-6xl flex justify-center items-center">
                 <DeletionSuccessful />
+            </Container>
+        )
+    }
+
+    if (loading) {
+        return (
+            <Container className="max-w-6xl flex justify-center items-center">
+                <CustomLoader />
             </Container>
         )
     }

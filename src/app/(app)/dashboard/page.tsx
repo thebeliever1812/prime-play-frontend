@@ -129,11 +129,9 @@ const Dashboard = () => {
         }
     }, [isAuthenticated, refreshChannelStats])
 
-
-
-    if (isLoadingUser) {
+    if (channelStatsLoading) {
         return (
-            <Container className="max-w-6xl flex justify-center items-center">
+            <Container className="max-w-6xl flex justify-center items-center">  
                 <CustomLoader />
             </Container>
         )
@@ -147,61 +145,94 @@ const Dashboard = () => {
     }
 
     return (
-        <Container className='max-w-6xl pt-2'>
-            <div className='w-full h-32 sm:h-56 lg:h-72 relative duration-150 ease-in'>
-                {
-                    userData && (
+        <Container className="max-w-6xl pt-2">
+            {/* ================= COVER SECTION (ALWAYS RENDER) ================= */}
+            <div className="w-full h-32 sm:h-56 lg:h-72 relative duration-150 ease-in">
+                <div className="w-full h-full overflow-hidden relative rounded-lg sm:rounded-2xl">
+
+                    {/* COVER IMAGE */}
+                    {userData ? (
                         <>
-                            <div className='w-full h-full overflow-hidden relative'>
-                                <Image src={userData.coverImage} alt='Cover Image' fill className='object-cover  rounded-lg sm:rounded-2xl' />
-                                <div className='absolute right-0 bottom-0 p-2 flex gap-2 sm:gap-4'>
-                                    <SquarePen className='text-white cursor-pointer' />
-                                    <Trash className='text-red-600 cursor-pointer' onClick={() => setShowDeleteConfirm(true)} />
-                                </div>
-                            </div>
-                            <div className='w-full aspect-square rounded-full max-w-32 sm:max-w-60 lg:max-w-80 absolute top-full left-[50%] -translate-x-[50%] -translate-y-[50%]'>
-                                <Image src={userData.avatar} alt='Avatar' fill className='object-cover' />
-                                <SquarePen className='w-5 sm:w-7 lg:w-10 text-gray-400 cursor-pointer absolute top-full left-1/2 -translate-x-1/2 -translate-y-8 sm:-translate-y-10 lg:-translate-y-11 ' />
-                            </div>
-
-                            <div className='w-full absolute top-[195px] sm:top-[345px] lg:top-[445px] duration-150 '>
-                                <h2 className='w-full text-center text-xl sm:text-3xl lg:text-4xl font-semibold text-[#1E293B]'>
-                                    {userData.fullName}
-                                </h2>
-                                <p className='w-full text-center text-sm sm:text-base lg:text-lg text-gray-600'>
-                                    {userData.username}
-                                </p>
-
-                                <div className='w-full h-1 border-b border-gray-300'></div>
+                            <Image
+                                src={userData.coverImage}
+                                alt="Cover Image"
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                            <div className="absolute right-0 bottom-0 p-2 flex gap-2 sm:gap-4">
+                                <SquarePen className="text-white cursor-pointer" />
+                                <Trash
+                                    className="text-red-600 cursor-pointer"
+                                    onClick={() => setShowDeleteConfirm(true)}
+                                />
                             </div>
                         </>
-                    ) 
-                }
+                    ) : (
+                        <div className="w-full h-full bg-gray-200 animate-pulse" />
+                    )}
+                </div>
+
+                {/* ================= AVATAR (ALWAYS RENDER WRAPPER) ================= */}
+                <div className="w-full aspect-square rounded-full max-w-32 sm:max-w-60 lg:max-w-80 absolute top-full left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden">
+                    {userData && (
+                        <>
+                            <Image
+                                src={userData.avatar}
+                                alt="Avatar"
+                                fill
+                                className="object-cover"
+                            />
+                            <SquarePen className="w-5 sm:w-7 lg:w-10 text-gray-400 cursor-pointer absolute top-full left-1/2 -translate-x-1/2 -translate-y-8 sm:-translate-y-10 lg:-translate-y-11" />
+                        </>
+                    )}
+                </div>
+
+                {/* ================= USER INFO (ALWAYS RENDER) ================= */}
+                <div className="w-full absolute top-[195px] sm:top-[345px] lg:top-[445px] duration-150">
+                    <h2 className="w-full text-center text-xl sm:text-3xl lg:text-4xl font-semibold text-[#1E293B]">
+                        {userData ? userData.fullName : " "}
+                    </h2>
+                    <p className="w-full text-center text-sm sm:text-base lg:text-lg text-gray-600">
+                        {userData ? userData.username : " "}
+                    </p>
+                    <div className="w-full h-1 border-b border-gray-300" />
+                </div>
             </div>
-            {
-                showDeleteConfirm && (
-                    <DeletePopUp message='Do you really want to delete the cover image?' setShow={setShowDeleteConfirm} deleteAction={deleteCoverImage} />
-                )
-            }
 
-            <div className='mt-[145px] sm:mt-[220px] lg:mt-[270px] duration-150 ease-in'>
-                {
-                    channelStatsLoading ?
-                        <div className='w-full flex justify-center items-center h-10'>
-                            <Loader2 className="animate-spin w-8 h-8" />
-                        </div> :
-                        <div className='w-full grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 px-2 sm:px-6 lg:px-12'>
-                            {
-                                stats.map((stat, index) => (
-                                    <StatCard key={index} statNumber={stat.value} statName={stat.name} />
-                                ))
-                            }
-                        </div>
-                }
+            {/* ================= DELETE POPUP (CLIENT ONLY — SAFE) ================= */}
+            {showDeleteConfirm && (
+                <DeletePopUp
+                    message="Do you really want to delete the cover image?"
+                    setShow={setShowDeleteConfirm}
+                    deleteAction={deleteCoverImage}
+                />
+            )}
 
-                <div className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 px-2 sm:px-6 lg:px-12 overflow-visible'>
+            {/* ================= STATS + LINKS ================= */}
+            <div className="mt-[145px] sm:mt-[220px] lg:mt-[270px] duration-150 ease-in">
+                {channelStatsLoading ? (
+                    <div className="w-full flex justify-center items-center h-10">
+                        <Loader2 className="animate-spin w-8 h-8" />
+                    </div>
+                ) : (
+                    <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 px-2 sm:px-6 lg:px-12">
+                        {stats.map((stat, index) => (
+                            <StatCard
+                                key={index}
+                                statNumber={stat.value}
+                                statName={stat.name}
+                            />
+                        ))}
+                    </div>
+                )}
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 px-2 sm:px-6 lg:px-12 overflow-visible">
                     {dashboardLinks.map((link) => (
-                        <DashboardLinkItem key={link.path} label={link.label} path={link.path} />
+                        <DashboardLinkItem
+                            key={link.path}
+                            label={link.label}
+                            path={link.path}
+                        />
                     ))}
                 </div>
             </div>
