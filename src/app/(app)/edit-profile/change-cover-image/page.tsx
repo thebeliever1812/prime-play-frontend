@@ -16,7 +16,7 @@ const coverImageSchema = z.object({
 
 type Inputs = z.infer<typeof coverImageSchema>
 
-export const ChangeCoverImageForm = () => {
+export const ChangeCoverImage = () => {
     const [preview, setPreview] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -99,4 +99,4 @@ export const ChangeCoverImageForm = () => {
     )
 }
 
-export default ChangeCoverImageForm
+export default ChangeCoverImage
