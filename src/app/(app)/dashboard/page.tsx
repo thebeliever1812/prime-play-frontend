@@ -6,8 +6,16 @@ import axios from 'axios'
 import { Loader2, SquarePen, Trash } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+
+interface UserData {
+    fullName: string;
+    username: string;
+    avatar: string;
+    coverImage: string;
+}
 
 interface Stats {
     name: string;
@@ -16,10 +24,10 @@ interface Stats {
 
 const Dashboard = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false)
-    const [channelStatsLoading, setChannelStatsLoading] = useState<boolean>(false)
-    const [mounted, setMounted] = useState<boolean>(false);
+    const [channelStatsLoading, setChannelStatsLoading] = useState<boolean>(true)
+    const [refreshChannelStats, setRefreshChannelStats] = useState(false)
 
-    const [userData, setUserData] = useState<any>(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     const [stats, setStats] = useState<Stats[]>([
         { name: "Views", value: 0 },
@@ -28,16 +36,17 @@ const Dashboard = () => {
         { name: "Subscriptions", value: 0 },
     ]);
 
-    useEffect(() => setMounted(true), []);
-
     const user = useAppSelector(state => state.user.user)
     const isLoadingUser = useAppSelector(state => state.user.loading)
 
     const isAuthenticated = !!user
 
+    const router = useRouter()
+
     const deleteCoverImage = async () => {
         try {
             await api.delete("/user/delete-cover-image")
+            setRefreshChannelStats(prev => !prev);
             toast.success("Cover image deleted successfully")
             setShowDeleteConfirm(false)
         } catch (error) {
@@ -80,13 +89,20 @@ const Dashboard = () => {
             path: "/edit-profile"
         },
     ]
-        
+
+
     useEffect(() => {
         const fetchChannelStats = async () => {
             setChannelStatsLoading(true)
             try {
                 const response = await api.get("/user/channel-stats")
-                console.log("Channel Stats Response:", response.data);
+
+                setUserData({
+                    fullName: response.data.data.fullName,
+                    username: response.data.data.username,
+                    avatar: response.data.data.avatar,
+                    coverImage: response.data.data.coverImage,
+                });
 
                 setStats([
                     { name: "Views", value: response.data.data.totalViews || 0 },
@@ -106,10 +122,14 @@ const Dashboard = () => {
             }
         }
 
-        fetchChannelStats()
-    }, [])
+        if (!isLoadingUser && isAuthenticated) {
+            fetchChannelStats();
+        } else if (!isLoadingUser && !isAuthenticated) {
+            setChannelStatsLoading(false);
+        }
+    }, [isAuthenticated, refreshChannelStats])
 
-    if (!mounted) return null;
+
 
     if (isLoadingUser) {
         return (
@@ -128,32 +148,35 @@ const Dashboard = () => {
 
     return (
         <Container className='max-w-6xl pt-2'>
-            <div className='w-full h-32 sm:h-56 lg:h-72 relative duration-150'>
-                <div className='w-full h-full overflow-hidden relative'>
-                    <Image src={user.coverImage} alt='Cover Image' fill className='object-cover  rounded-lg sm:rounded-2xl' />
-                    <div className='absolute right-0 bottom-0 p-2 flex gap-2 sm:gap-4'>
-                        <SquarePen className='text-white cursor-pointer' />
-                        <Trash className='text-red-600 cursor-pointer' onClick={() => setShowDeleteConfirm(true)} />
-                    </div>
-                </div>
-                {/* Profile Image */}
-                <div className='w-full aspect-square rounded-full max-w-32 sm:max-w-60 lg:max-w-80 absolute top-full left-[50%] -translate-x-[50%] -translate-y-[50%]'>
-                    <Image src={user.avatar} alt='Avatar' fill className='object-cover' />
-                    <SquarePen className='w-5 sm:w-7 lg:w-10 text-gray-400 cursor-pointer absolute top-full left-1/2 -translate-x-1/2 -translate-y-8 sm:-translate-y-10 lg:-translate-y-11 ' />
-                </div>
+            <div className='w-full h-32 sm:h-56 lg:h-72 relative duration-150 ease-in'>
+                {
+                    userData && (
+                        <>
+                            <div className='w-full h-full overflow-hidden relative'>
+                                <Image src={userData.coverImage} alt='Cover Image' fill className='object-cover  rounded-lg sm:rounded-2xl' />
+                                <div className='absolute right-0 bottom-0 p-2 flex gap-2 sm:gap-4'>
+                                    <SquarePen className='text-white cursor-pointer' />
+                                    <Trash className='text-red-600 cursor-pointer' onClick={() => setShowDeleteConfirm(true)} />
+                                </div>
+                            </div>
+                            <div className='w-full aspect-square rounded-full max-w-32 sm:max-w-60 lg:max-w-80 absolute top-full left-[50%] -translate-x-[50%] -translate-y-[50%]'>
+                                <Image src={userData.avatar} alt='Avatar' fill className='object-cover' />
+                                <SquarePen className='w-5 sm:w-7 lg:w-10 text-gray-400 cursor-pointer absolute top-full left-1/2 -translate-x-1/2 -translate-y-8 sm:-translate-y-10 lg:-translate-y-11 ' />
+                            </div>
 
-                <div className='w-full absolute top-[195px] sm:top-[345px] lg:top-[445px] duration-150 '>
-                    <h2 className='w-full text-center text-xl sm:text-3xl lg:text-4xl font-semibold text-[#1E293B]'>
-                        {user.fullName}
-                    </h2>
-                    <p className='w-full text-center text-sm sm:text-base lg:text-lg text-gray-600'>
-                        {user.username}
-                    </p>
+                            <div className='w-full absolute top-[195px] sm:top-[345px] lg:top-[445px] duration-150 '>
+                                <h2 className='w-full text-center text-xl sm:text-3xl lg:text-4xl font-semibold text-[#1E293B]'>
+                                    {userData.fullName}
+                                </h2>
+                                <p className='w-full text-center text-sm sm:text-base lg:text-lg text-gray-600'>
+                                    {userData.username}
+                                </p>
 
-                    <div className='w-full h-1 border-b border-gray-300'></div>
-                </div>
-
-
+                                <div className='w-full h-1 border-b border-gray-300'></div>
+                            </div>
+                        </>
+                    ) 
+                }
             </div>
             {
                 showDeleteConfirm && (
