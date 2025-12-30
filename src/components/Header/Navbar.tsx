@@ -162,14 +162,14 @@ const Navbar = () => {
                             }
                             {/* Profile button */}
                             <div className='relative z-50'>
-                                <div className='w-[40px] h-[40px] rounded-full shrink-0 relative cursor-pointer' onClick={() => setShowProfile(!showProfile)}>
+                                <div className='w-[40px] h-[40px] rounded-full shrink-0 relative cursor-pointer overflow-hidden' onClick={() => setShowProfile(!showProfile)}>
                                     <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
                                 </div>
                                 {
                                     showProfile &&
                                     <div className='w-60 sm:w-sm absolute right-0 top-[50px] p-5 rounded-xl flex flex-col sm:flex-row items-center gap-5 duration-200 bg-[#F1F5F9] z-50'>
                                         <div className='flex flex-col items-center w-full sm:max-w-1/2'>
-                                            <div className='w-14 sm:w-24 aspect-square relative duration-200 '>
+                                            <div className='w-14 sm:w-24 aspect-square relative duration-200 overflow-hidden rounded-full '>
                                                 <Image src={user ? user.avatar : "/default_avatar.png"} fill alt='Avatar image of user' />
                                             </div>
                                             {

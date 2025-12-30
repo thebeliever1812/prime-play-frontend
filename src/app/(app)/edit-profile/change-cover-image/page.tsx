@@ -44,7 +44,7 @@ const ChangeCoverImage = () => {
 
             const response = await api.patch('/user/update-cover-image', formData)
             toast.success(response.data?.data?.message || 'Cover image updated successfully')
-            router.replace("/edit-profile")
+            router.replace("/dashboard")
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.log('Error uploading cover image:', error.response?.data?.message || error.message)
