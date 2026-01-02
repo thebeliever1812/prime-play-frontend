@@ -18,6 +18,7 @@ import DashboardLinkItem from "./DashboardLinkItem";
 import StatCard from "./StatCard";
 import EditProfileCard from "./EditProfileCard";
 import DeletionSuccessful from "./DeletionSuccessful";
+import VideoCardSkeleton from "./VideoCardSkeleton";
 
 export {
     Container,
@@ -40,4 +41,5 @@ export {
     StatCard,
     EditProfileCard,
     DeletionSuccessful,
+    VideoCardSkeleton,
 };

@@ -33,7 +33,7 @@ interface VideoCardProps {
     setVideos?: React.Dispatch<React.SetStateAction<Video[]>>;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [showDeletePopUp, setShowDeletePopUp] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, description, uploadDa
 
     const user = useAppSelector(state => state.user.user)
 
-    const isAuthorised = user?._id === ownerId
+    const isAuthorised = ownerId ? user?._id === ownerId : false;
 
     const handleDeleteMyVideo = async () => {
         try {

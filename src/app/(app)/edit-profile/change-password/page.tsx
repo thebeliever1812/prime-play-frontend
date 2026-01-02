@@ -30,8 +30,6 @@ export default function ChangePasswordPage() {
         resolver: zodResolver(updatePasswordSchema),
     });
 
-    const newPassword = watch('newPassword');
-
     const onSubmit: SubmitHandler<PasswordFormInputs> = async (data) => {
         setIsLoading(true);
         try {
