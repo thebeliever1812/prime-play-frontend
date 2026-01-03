@@ -14,10 +14,8 @@ type Props<T extends FieldValues> = {
     name: Path<T>;
     register: UseFormRegister<T>;
     watch: UseFormWatch<T>;
-
     required?: boolean;
     error?: string;
-
     buttonText: string;
     small?: boolean; // smaller preview size
     accept?: string; // default: "image/*"
@@ -35,7 +33,7 @@ export function ImageUploadWithPreview<T extends FieldValues>({
     accept = "image/*",
 }: Props<T>) {
     const inputId = useId();
-    const fileList = watch(name) as unknown as FileList | undefined;
+    const fileList = watch(name);
 
     const [preview, setPreview] = useState<string>("");
 

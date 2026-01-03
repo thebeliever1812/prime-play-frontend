@@ -145,7 +145,7 @@ const Dashboard = () => {
         } else if (!isLoadingUser && !isAuthenticated) {
             setChannelStatsLoading(false);
         }
-    }, [isAuthenticated, refreshChannelStats])
+    }, [isAuthenticated, refreshChannelStats, isLoadingUser])
 
     if (channelStatsLoading) {
         return (

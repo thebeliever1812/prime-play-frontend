@@ -52,27 +52,27 @@ const RegisterForm = () => {
         {/* Avatar upload */}
         <ImageUploadWithPreview<Inputs>
           label="Avatar"
-          name={"avatar" as any}
+          name={"avatar"}
           register={register}
           watch={watch}
           accept="image/*"
           required={true}
           small={true}
           buttonText="Choose Avatar"
-          error={(errors as any).avatar?.message}
+          error={errors.avatar?.message?.toString()}
         />
 
         {/* Video upload */}
         <ImageUploadWithPreview<Inputs>
           label="Cover Image"
-          name={"coverImage" as any}
+          name={"coverImage"}
           register={register}
           watch={watch}
           accept="image/*"
           required={true}
           small={true}
           buttonText="Choose Cover Image"
-          error={(errors as any).coverImage?.message}
+          error={errors.coverImage?.message?.toString()}
         />
       </div>
 

@@ -3,7 +3,6 @@ import { Container, VideoCard, VideoCardSkeleton } from '@/components'
 import { api } from '@/utils/api';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { toast } from 'react-toastify';
 
 interface Owner {
     _id: string;
@@ -72,8 +71,7 @@ const AllVideos = () => {
 
             if (node) observer.current.observe(node);
         },
-        [isFetchingNext, hasMore, nextCursor]
-    );
+        [isFetchingNext, hasMore, nextCursor, fetchNextVideos]);
 
     useEffect(() => {
         const fetchInitialVideos = async () => {

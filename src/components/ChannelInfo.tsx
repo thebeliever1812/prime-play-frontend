@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { SubscriptionForm } from './index';
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { is } from 'zod/locales';
 
 interface ChannelInfoProps {
     username: string;

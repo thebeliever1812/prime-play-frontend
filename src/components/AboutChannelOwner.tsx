@@ -39,7 +39,7 @@ const AboutChannelOwner = ({ username }: AboutChannelOwnerProps) => {
         }
 
         fetchChannelOwnerDetails()
-    }, [])
+    }, [username])
 
     if (isLoadingChannelOwnerDetails) {
         return (

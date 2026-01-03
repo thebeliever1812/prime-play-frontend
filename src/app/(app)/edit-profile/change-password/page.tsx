@@ -22,7 +22,6 @@ export default function ChangePasswordPage() {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
         reset,
     } = useForm<PasswordFormInputs>({
@@ -34,7 +33,7 @@ export default function ChangePasswordPage() {
         setIsLoading(true);
         try {
             // API call here
-            const response = await api.patch('/user/change-password', {
+            await api.patch('/user/change-password', {
                 oldPassword: data.oldPassword,
                 newPassword: data.newPassword,
             });

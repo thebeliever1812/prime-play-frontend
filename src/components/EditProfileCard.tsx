@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 interface EditProfileCardProps {
     title: string;
     description: string;

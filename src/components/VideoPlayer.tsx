@@ -2,7 +2,7 @@
 import { api } from '@/utils/api';
 import axios from 'axios';
 import { Loader2, Maximize, Minimize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Container, CustomLoader, LikeForm, SubscriptionForm } from './index';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
@@ -171,7 +171,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
 
     useEffect(() => {
         fetchComments();
-    }, [id]);
+    }, [id, fetchComments]);
 
     // Subscription details k liy
     useEffect(() => {
@@ -205,7 +205,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         });
     }, []);
 
-    const togglePlay = () => {
+    const togglePlay = useCallback(() => {
         if (!videoRef.current) return;
         if (videoRef.current.paused) {
             videoRef.current.play();
@@ -214,13 +214,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
             videoRef.current.pause();
             setIsPlaying(false);
         }
-    };
+    }, [])
 
-    const toggleMute = () => {
+    const toggleMute = useCallback(() => {
         if (!videoRef.current) return;
         videoRef.current.muted = !videoRef.current.muted;
         setIsMuted(videoRef.current.muted);
-    };
+    }, [])
 
     const handleFullscreen = () => {
         if (!document.fullscreenElement) {

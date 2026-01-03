@@ -39,7 +39,7 @@ const FetchChannelVideo: React.FC<FetchChannelVideoProps> = ({ username }) => {
         }
 
         fetchChannelVideo()
-    }, [])
+    }, [username])
 
     if (isLoading) {
         return (
