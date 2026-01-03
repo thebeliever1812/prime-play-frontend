@@ -3,6 +3,7 @@ import { Container, VideoCard, VideoCardSkeleton } from '@/components'
 import { api } from '@/utils/api';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
 
 interface Owner {
     _id: string;
@@ -80,8 +81,7 @@ const AllVideos = () => {
                 const response = await api.get('/video/all-videos', {
                     params: { limit: 6 },
                 });
-                console.log(response)
-                setVideos(response.data?.data || []);
+                setVideos(response.data?.data.videos || []);
                 setNextCursor(response.data.data.nextCursor);
                 setHasMore(!!response.data.data.nextCursor);
             } catch (error) {
@@ -119,7 +119,7 @@ const AllVideos = () => {
         <Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
             {videos.map((video, index) => {
                 const isLast = index === videos.length - 1;
-                return (<div ref={isLast ? lastVideoRef : null} key={video._id}>
+                return (<div className='w-full' ref={isLast ? lastVideoRef : null} key={video._id}>
                     <VideoCard
                         _id={video._id}
                         title={video.title}
