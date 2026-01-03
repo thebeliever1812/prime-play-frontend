@@ -15,7 +15,6 @@ type Inputs = z.infer<typeof UserLoginSchema>
 
 const LoginForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
-
     const router = useRouter()
 
     const {
@@ -42,15 +41,36 @@ const LoginForm = () => {
             setIsSubmitting(false)
         }
     }
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} encType='multipart/form-data' className='space-y-3'>
-            <div className='space-y-3 w-full'>
-                <FormInput<Inputs> type='email' label='Email' name='email' register={register} placeholder='Enter your email' required error={errors.email?.message} />
-                <FormInput<Inputs> type='password' label='Password' name='password' register={register} placeholder='Enter your password' required error={errors.password?.message} />
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-6 p-6 bg-white shadow-md rounded-lg'>
+            <div className='space-y-4'>
+                <FormInput<Inputs>
+                    type='email'
+                    label='Email'
+                    name='email'
+                    register={register}
+                    placeholder='Enter your email'
+                    required
+                    error={errors.email?.message}
+                />
+                <FormInput<Inputs>
+                    type='password'
+                    label='Password'
+                    name='password'
+                    register={register}
+                    placeholder='Enter your password'
+                    required
+                    error={errors.password?.message}
+                />
             </div>
 
-            <button type="submit" className={`flex justify-center items-center gap-2 text-white w-full rounded-[10px] h-[35px] mt-3  ${isSubmitting ? "bg-[#948fef] cursor-not-allowed" : "bg-[#4F46E5] cursor-pointer"}`} disabled={isSubmitting} >
-                {isSubmitting ? `Please wait` : "Log in"}
+            <button
+                type="submit"
+                className={`flex justify-center items-center gap-2 text-white w-full rounded-lg h-12 mt-4 transition duration-300 ease-in-out cursor-pointer ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 "}`}
+                disabled={isSubmitting}
+            >
+                {isSubmitting ? `Logging in...` : "Log in"}
                 {isSubmitting && <Loader2 className='animate-spin' />}
             </button>
         </form>

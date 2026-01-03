@@ -19,6 +19,7 @@ import StatCard from "./StatCard";
 import EditProfileCard from "./EditProfileCard";
 import DeletionSuccessful from "./DeletionSuccessful";
 import VideoCardSkeleton from "./VideoCardSkeleton";
+import { ImageUploadWithPreview } from "./ImageUploadWithPreview";
 
 export {
     Container,
@@ -42,4 +43,5 @@ export {
     EditProfileCard,
     DeletionSuccessful,
     VideoCardSkeleton,
+    ImageUploadWithPreview,
 };
