@@ -2,8 +2,6 @@
 import { UploadVideoForm } from '@/components/UploadPage'
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '@/lib/hook'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
 import { Container, CustomLoader } from '@/components'
 import Link from 'next/link'
 
@@ -12,8 +10,6 @@ const UploadPage = () => {
     const isLoadingUser = useAppSelector((state) => state.user.loading)
     const user = useAppSelector((state) => state.user.user)
     const isAuthenticated = !!user
-
-    const router = useRouter()
 
     useEffect(() => {
         setLoading(isLoadingUser)

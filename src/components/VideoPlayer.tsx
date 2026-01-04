@@ -154,20 +154,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
         }
     }
 
-    const fetchComments = async () => {
+    const fetchComments = useCallback(async () => {
         try {
             const response = await api.get(`/comment/video/${id}`);
-            setComments(response.data?.data || [])
+            setComments(response.data?.data || []);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.log('Error fetching comments:', error.response?.data?.message || error.message);
+                console.log(
+                    'Error fetching comments:',
+                    error.response?.data?.message || error.message
+                );
             } else {
                 console.log('Unexpected error while fetching comments:', error);
             }
         } finally {
             setLoadingComments(false);
         }
-    }
+    }, [id]);
+
 
     useEffect(() => {
         fetchComments();

@@ -125,7 +125,7 @@ const AllVideos = () => {
         <Container className="max-w-6xl py-4">
             {search && (
                 <p className="text-base text-gray-500 mb-4">
-                    Search results for "{search}"
+                    Search results for &quot;{search}&quot;
                 </p>
             )}
             <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center'>
