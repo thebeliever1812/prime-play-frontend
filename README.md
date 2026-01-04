@@ -26,6 +26,16 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 - 🔎 **Advanced Search Functionality** – Quickly find videos across the platform  
 - ⚡ **Responsive Design** – Smooth, optimized UI across all devices
 
+### 📊 User Dashboard
+
+- 🎥 **My Videos** – View, edit, and manage uploaded content  
+- 👍 **Liked Videos** – Quick access to all liked videos  
+- 🎶 **My Playlists** – Create, update, and organize playlists  
+- 🕒 **Watch History** – Track previously watched content  
+- 👥 **My Subscribers** – View and manage channel subscribers  
+- 🔔 **My Subscriptions** – Manage followed creators  
+- ✏️ **Edit Profile** – Update personal and channel details 
+
 ---
 
 ## 🚀 Live Demo
