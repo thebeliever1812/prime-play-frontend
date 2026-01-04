@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form";
-import { FormInput } from '@/components'
+import { FormInput, ImageUploadWithPreview } from '@/components'
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/utils/api';
@@ -21,6 +21,7 @@ const UploadVideoForm = () => {
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors }
     } = useForm<Inputs>({
         resolver: zodResolver(UploadVideoSchema)
@@ -41,11 +42,7 @@ const UploadVideoForm = () => {
                 formData.append("videoFile", data.videoFile[0]);
             }
 
-            const response = await api.post("/video/upload-video", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+            const response = await api.post("/video/upload-video", formData);
             toast.success(response.data?.message)
             router.replace("/")
         } catch (error) {
@@ -60,8 +57,8 @@ const UploadVideoForm = () => {
     }
 
     return (
-        <div className='w-full max-w-4xl mx-auto p-5 bg-white rounded-lg shadow-md mt-20'>
-            <form onSubmit={handleSubmit(onSubmit)} encType='multipart/form-data' className='space-y-3'>
+        <div className='w-full max-w-2xl mx-auto p-5 bg-white rounded-lg shadow-md mt-20'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
                 <FormInput label='Title' name='title' register={register} placeholder='Enter video title' required type='text' error={errors.title?.message} />
 
                 <div className='w-full'>
@@ -82,10 +79,30 @@ const UploadVideoForm = () => {
                     {errors.description && <p className="mt-1 text-xs font-medium text-red-600">{errors.description.message}</p>}
                 </div>
 
-                <div className='w-full flex flex-col gap-3 sm:flex-row sm:gap-5 duration-200'>
-                    <FormInput label='Thumbnail' name='thumbnail' register={register} required type='file' error={errors.thumbnail?.message as string} />
+                <div className='w-full flex flex-col gap-3 sm:flex-row sm:justify-around sm:gap-5 duration-200'>
+                    <ImageUploadWithPreview<Inputs>
+                        label='Thumbnail Image'
+                        name='thumbnail'
+                        register={register}
+                        watch={watch}
+                        required={true}
+                        buttonText='Choose Thumbnail'
+                        error={errors.thumbnail?.message as string}
+                        accept="image/*"
+                        small={false}
+                    />
 
-                    <FormInput label='Video File' name='videoFile' register={register} required type='file' error={errors.videoFile?.message as string} />
+                    <ImageUploadWithPreview<Inputs>
+                        label='Video File'
+                        name='videoFile'
+                        register={register}
+                        watch={watch}
+                        required={true}
+                        buttonText='Choose Video'
+                        error={errors.videoFile?.message as string}
+                        accept="video/*"
+                        small={false}
+                    />
                 </div>
 
                 <button type="submit" className={`flex justify-center items-center gap-2 text-white w-full rounded-[10px] h-[35px] mt-3  ${isSubmitting ? "bg-[#948fef] cursor-not-allowed" : "bg-[#4F46E5] cursor-pointer"}`} disabled={isSubmitting} >

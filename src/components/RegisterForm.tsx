@@ -56,7 +56,7 @@ const RegisterForm = () => {
           register={register}
           watch={watch}
           accept="image/*"
-          required={true}
+          required={false}
           small={true}
           buttonText="Choose Avatar"
           error={errors.avatar?.message?.toString()}
@@ -69,7 +69,7 @@ const RegisterForm = () => {
           register={register}
           watch={watch}
           accept="image/*"
-          required={true}
+          required={false}
           small={true}
           buttonText="Choose Cover Image"
           error={errors.coverImage?.message?.toString()}

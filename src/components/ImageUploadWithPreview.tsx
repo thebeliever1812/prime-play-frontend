@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useId, useMemo, useState } from "react";
 import Image from "next/image";
 import type {
@@ -17,8 +16,8 @@ type Props<T extends FieldValues> = {
     required?: boolean;
     error?: string;
     buttonText: string;
-    small?: boolean; // smaller preview size
-    accept?: string; // default: "image/*"
+    small?: boolean;
+    accept?: "image/*" | "video/*";
 };
 
 export function ImageUploadWithPreview<T extends FieldValues>({
@@ -30,7 +29,7 @@ export function ImageUploadWithPreview<T extends FieldValues>({
     error,
     buttonText,
     small = true,
-    accept = "image/*",
+    accept,
 }: Props<T>) {
     const inputId = useId();
     const fileList = watch(name);
@@ -40,6 +39,8 @@ export function ImageUploadWithPreview<T extends FieldValues>({
     const file = useMemo(() => {
         return fileList && fileList.length > 0 ? fileList[0] : undefined;
     }, [fileList]);
+
+    const isVideo = file?.type?.startsWith("video/");
 
     useEffect(() => {
         if (!file) {
@@ -51,31 +52,35 @@ export function ImageUploadWithPreview<T extends FieldValues>({
         reader.onloadend = () => setPreview(reader.result as string);
         reader.readAsDataURL(file);
 
-        return () => {
-            // optional: abort read if component unmounts / file changes quickly
-            reader.abort();
-        };
+        return () => reader.abort();
     }, [file]);
 
-    const previewBoxClasses = small ? "w-24 h-24" : "w-full h-48";
+    const previewBoxClasses = small ? "w-24 h-24" : "w-48 h-48";
 
     return (
         <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-900">{label}</p>
-
+            <p className="text-sm font-medium text-gray-900">{label}{required && <span className="text-red-500">*</span>}</p>
             <div
                 className={`relative ${previewBoxClasses} rounded-lg overflow-hidden bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center`}
             >
                 {preview ? (
-                    <Image
-                        src={preview}
-                        alt={`${label} preview`}
-                        fill
-                        className="object-cover"
-                    />
+                    isVideo ? (
+                        <video
+                            src={preview}
+                            controls
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <Image
+                            src={preview}
+                            alt={`${label} preview`}
+                            fill
+                            className="object-cover"
+                        />
+                    )
                 ) : (
                     <span className="text-xs text-gray-500 text-center px-2">
-                        No image selected
+                        No file selected
                     </span>
                 )}
             </div>
@@ -90,8 +95,8 @@ export function ImageUploadWithPreview<T extends FieldValues>({
 
             <label
                 htmlFor={inputId}
-                className={`block border text-sm outline-none transition-colors focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-500 py-2 px-4 rounded-lg cursor-pointer text-center ${error ? "border-red-500" : "border-gray-300"
-                    }`}
+                className={`block border text-sm transition-colors text-gray-500 py-2 px-4 rounded-lg cursor-pointer text-center
+                ${error ? "border-red-500" : "border-gray-300"}`}
             >
                 {buttonText}
             </label>

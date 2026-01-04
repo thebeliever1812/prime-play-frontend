@@ -3,6 +3,7 @@ import { Container, VideoCard, VideoCardSkeleton } from '@/components'
 import { api } from '@/utils/api';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useSearchParams } from "next/navigation"
 
 interface Owner {
     _id: string;
@@ -28,6 +29,9 @@ const AllVideos = () => {
     const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [hasMore, setHasMore] = useState<boolean>(true);
 
+    const searchParams = useSearchParams()
+    const search = searchParams.get("search") || ""
+
     const fetchNextVideos = async () => {
         if (!hasMore || isFetchingNext) return;
 
@@ -38,6 +42,7 @@ const AllVideos = () => {
                 params: {
                     cursor: nextCursor,
                     limit: 3,
+                    search,
                 },
             });
 
@@ -77,7 +82,10 @@ const AllVideos = () => {
         const fetchInitialVideos = async () => {
             try {
                 const response = await api.get('/video/all-videos', {
-                    params: { limit: 6 },
+                    params: {
+                        limit: 6,
+                        search,
+                    },
                 });
                 setVideos(response.data?.data.videos || []);
                 setNextCursor(response.data.data.nextCursor);
@@ -94,7 +102,7 @@ const AllVideos = () => {
         }
 
         fetchInitialVideos();
-    }, []);
+    }, [search]);
 
     if (isInitialLoading) {
         return (<Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -114,31 +122,39 @@ const AllVideos = () => {
     }
 
     return (
-        <Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
-            {videos.map((video, index) => {
-                const isLast = index === videos.length - 1;
-                return (<div className='w-full' ref={isLast ? lastVideoRef : null} key={video._id}>
-                    <VideoCard
-                        _id={video._id}
-                        title={video.title}
-                        description={video.description}
-                        uploadDate={video.createdAt}
-                        thumbnail={video.thumbnail}
-                        views={video.views}
-                        avatarUrl={video.ownerInfo.avatar}
-                        username={video.ownerInfo.username}
-                        fullName={video.ownerInfo.fullName}
-                    />
-                </div>)
-            }
+        <Container className="max-w-6xl py-4">
+            {search && (
+                <p className="text-base text-gray-500 mb-4">
+                    Search results for "{search}"
+                </p>
             )}
-            {isFetchingNext && (
-                <>
-                    <VideoCardSkeleton />
-                    <VideoCardSkeleton />
-                    <VideoCardSkeleton />
-                </>
-            )}
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center'>
+                {videos.map((video, index) => {
+                    const isLast = index === videos.length - 1;
+                    return (<div className='w-full' ref={isLast ? lastVideoRef : null} key={video._id}>
+                        <VideoCard
+                            _id={video._id}
+                            title={video.title}
+                            description={video.description}
+                            uploadDate={video.createdAt}
+                            thumbnail={video.thumbnail}
+                            views={video.views}
+                            avatarUrl={video.ownerInfo.avatar}
+                            username={video.ownerInfo.username}
+                            fullName={video.ownerInfo.fullName}
+                        />
+                    </div>)
+                }
+                )}
+                {isFetchingNext && (
+                    <>
+                        <VideoCardSkeleton />
+                        <VideoCardSkeleton />
+                        <VideoCardSkeleton />
+                    </>
+                )}
+            </div>
+            
         </Container>
     )
 }

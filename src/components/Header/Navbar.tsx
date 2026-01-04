@@ -2,7 +2,6 @@
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { Plus_Jakarta_Sans } from 'next/font/google'
 import Link from 'next/link'
 import { api } from '@/utils/api'
 import { toast } from 'react-toastify'
@@ -10,17 +9,11 @@ import { useRouter } from 'next/navigation'
 import { Loader2, TextAlignJustify } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
-import { Sidebar } from '@/components/Header'
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-    weight: ['400', '500', '600', '700'], // font weights you want to use
-    subsets: ['latin'], // usually 'latin' is enough
-    style: 'normal', // optional, can also use 'italic'
-});
+import { SearchInput, Sidebar } from '@/components/Header'
 
 const Navbar = () => {
-    const [showMenu, setShowMenu] = useState(false)
-    const [showProfile, setShowProfile] = useState(false)
+    const [showMenu, setShowMenu] = useState<boolean>(false)
+    const [showProfile, setShowProfile] = useState<boolean>(false)
 
     const router = useRouter()
 
@@ -132,14 +125,7 @@ const Navbar = () => {
 
                 <div className='w-full flex gap-[5px] sm:gap-[12px] justify-end items-center'>
                     {/* Search bar */}
-                    <div className='w-full max-w-[165px] sm:max-w-[400px] align-middle px-[12px] py-[8px] border-[#CBD5E1] border-[1px] rounded-[123px] '>
-                        <div className='w-full max-w-[296px] flex gap-[8px] items-center justify-between' >
-                            <div className='w-4 sm:w-5 aspect-square relative shrink-0'>
-                                <Image src={"/search_icon.png"} alt='Search icon' fill />
-                            </div>
-                            <input type="search" className={`w-full outline-none placeholder-[#475569] text-sm sm:text-base ${plusJakartaSans.className}`} placeholder='Search video...' />
-                        </div>
-                    </div>
+                    <SearchInput />
                     {/* Upload Button */}
                     {
                         isLoadingUser ? <>

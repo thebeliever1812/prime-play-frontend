@@ -1,7 +1,7 @@
 "use client";
 import { api } from '@/utils/api';
 import axios from 'axios';
-import { Loader2, Maximize, Minimize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
+import { EllipsisVertical, Loader2, Maximize, Minimize, Pause, Play, RotateCcw, VideoOff, Volume2, VolumeX } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Container, CustomLoader, LikeForm, SubscriptionForm } from './index';
 import Image from 'next/image';
@@ -273,12 +273,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
 
     useEffect(() => {
         const handleKeyboardListners = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement;
+
+            // Ignore typing inside inputs, textarea, contenteditable
+            if (
+                target.tagName === "INPUT" ||
+                target.tagName === "TEXTAREA" ||
+                target.isContentEditable
+            ) {
+                return;
+            }
+
+            if (!videoRef.current) return;
+
             // Prevent page scroll on space
             if (e.code === "Space") {
                 e.preventDefault();
             }
-
-            if (!videoRef.current) return;
 
             switch (e.code) {
                 case "Space":
@@ -287,7 +298,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
 
                 case "ArrowRight":
                     setForwardIcon(true);
-
                     if (forwardTimeoutRef.current) {
                         clearTimeout(forwardTimeoutRef.current);
                     }
@@ -315,11 +325,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                 default:
                     break;
             }
-        }
-        window.addEventListener("keydown", handleKeyboardListners)
+        };
 
-        return () => window.removeEventListener("keydown", handleKeyboardListners)
-    }, [togglePlay, toggleMute])
+        window.addEventListener("keydown", handleKeyboardListners);
+        return () => window.removeEventListener("keydown", handleKeyboardListners);
+    }, [togglePlay, toggleMute]);
+
 
     function formatTime(seconds: number) {
         const mins = Math.floor(seconds / 60);
@@ -488,7 +499,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                         <div className='p-3 w-full rounded-lg flex flex-col gap-2 items-end border-[1px] bg-[#F8FAFC] border-[#E2E8F0]'>
                             <textarea id="comment" placeholder='Write your comment here...' rows={2} className='placeholder-[#1E293B] w-full text-[14px] outline-none' {...register("comment")}></textarea>
                             {
-                                errors.comment && <p role="alert">{errors.comment.message}</p>
+                                errors.comment && <p role="alert" className='text-red-500'>{errors.comment.message}</p>
                             }
                             <button type="submit" disabled={postingComment} className={``}>
                                 {
@@ -511,12 +522,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id }) => {
                                     <div className='relative aspect-square w-[30px] sm:w-[40px] duration-150 rounded-full overflow-hidden mt-1'>
                                         <Image src={comment?.ownerDetails?.avatar || "/default_avatar.png"} alt='Avatar of the owner of comment' fill />
                                     </div>
-                                    <div className='py-1 px-2 grow space-y-1'>
-                                        <div className='flex w-full justify-between items-center'>
-                                            <h3 className='text-[#1E293B] text-[14px] font-bold'>{comment.ownerDetails.fullName}</h3>
-                                            <span className='text-[#475569] text-[12px]'>{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
+                                    <div className='w-full py-1 px-2 flex gap-2'>
+                                        <div className='space-y-1 grow'>
+                                            <div className='flex w-full justify-between items-center'>
+                                                <h3 className='text-[#1E293B] text-[14px] font-bold'>{comment.ownerDetails.fullName}</h3>
+                                                <span className='text-[#475569] text-[12px]'>{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
+                                            </div>
+                                            <p className='text-[#475569] text-[14px]'>{comment.content}</p>
                                         </div>
-                                        <p className='text-[#475569] text-[14px]'>{comment.content}</p>
+                                        {
+                                            isAuthenticated && user?._id === comment.ownerDetails._id && (
+                                                <div className='relative'>
+                                                    <EllipsisVertical className='w-4 h-4 mt-1 text-gray-600 cursor-pointer relative' />
+                                                </div>
+                                            )
+                                        }
+                                        
                                     </div>
                                 </div>
                             ))
