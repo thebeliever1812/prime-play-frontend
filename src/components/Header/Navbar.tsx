@@ -10,6 +10,7 @@ import { Loader2, TextAlignJustify } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
 import { SearchInput, Sidebar } from '@/components/Header'
+import { DonationCard } from '@/components'
 
 const Navbar = () => {
     const [showMenu, setShowMenu] = useState<boolean>(false)
@@ -185,6 +186,7 @@ const Navbar = () => {
                     <div className='fixed w-full h-screen left-0 bg-black/40 backdrop-blur-[2px] top-0 z-40' onClick={() => setShowProfile(false)}>
                     </div>
                 }
+                <DonationCard />
             </nav>
             <div className='w-full h-[61px] sm:h-[69px]'>
             </div>
