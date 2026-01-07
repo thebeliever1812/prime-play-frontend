@@ -154,7 +154,7 @@ const DonationCard = () => {
                         onClick={handleDismissForever}
                         className="w-full text-center text-xs text-white/70 transition-colors hover:text-white/90 cursor-pointer"
                     >
-                        Don't show again
+                        Don&apos;t show again
                     </button>
                 </div>
             </div>
