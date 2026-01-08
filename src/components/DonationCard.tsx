@@ -4,6 +4,10 @@ import { X, Heart, IndianRupee } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { setDismissedForever, setLastShownAt } from "@/lib/features/donation/donation.slice";
 import { useAppDispatch, useAppSelector } from "@/lib/hook";
+import { loadRazorpay } from "@/utils/loadRazorpay";
+import { api } from "@/utils/api";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const DONATION_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
@@ -14,23 +18,28 @@ const presetAmounts = [
 ];
 
 const DonationCard = () => {
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
     const [showCustomAmountDiv, setShowCustomAmountDiv] = useState<boolean>(false);
     const [customAmount, setCustomAmount] = useState<number>(1);
+    const [isPaying, setIsPaying] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
 
     const dismissedForever = useAppSelector((state) => state.donation.dismissedForever)
     const lastShownAt = useAppSelector((state) => state.donation.lastShownAt)
 
+    const isLoadingUser = useAppSelector((state) => state.user.loading);
+
     useEffect(() => {
         if (dismissedForever) return;
+
+        if (isLoadingUser) return;
 
         const now = Date.now();
 
         const canShow =
             lastShownAt == null || now - lastShownAt >= DONATION_INTERVAL;
-        
+
         const showCard = () => {
             setIsVisible(true);
             dispatch(setLastShownAt(Date.now()));
@@ -42,7 +51,7 @@ const DonationCard = () => {
             : Math.max(0, DONATION_INTERVAL - (now - (lastShownAt ?? 0)));
         const timer = setTimeout(showCard, delay);
         return () => clearTimeout(timer);
-    }, [dismissedForever, lastShownAt, dispatch]);
+    }, [dismissedForever, lastShownAt, dispatch, isLoadingUser]);
 
     const handleDismiss = () => {
         setIsVisible(false);
@@ -53,21 +62,98 @@ const DonationCard = () => {
         setIsVisible(false);
     };
 
-    const handleDonate = (amount: number) => {
-        alert(`Thank you for your donation of ₹${amount}!`);
+    const handleDonate = async (amount: number) => {
+        if (!amount || amount < 1) {
+            toast.error("Please enter a valid donation amount");
+            return;
+        }
+        try {
+            setIsPaying(true);
+            const loaded = await loadRazorpay();
+
+            if (!loaded) {
+                toast.error("Razorpay failed to load. Check your connection.");
+                setIsPaying(false);
+                return;
+            }
+
+            if (!window.Razorpay) {
+                toast.error("Razorpay is not available");
+                setIsPaying(false);
+                return;
+            }
+
+            const { data } = await api.post("/donation/create-order", { amount });
+            const order = data.data; // ApiResponse wraps it
+
+            const options: RazorpayOptions = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+                amount: order.amount,
+                currency: "INR",
+                name: "BASIR AHMAD",
+                description: "Support BASIR AHMAD",
+                order_id: order.id,
+                handler: async (response) => {
+                    try {
+                        // 4️⃣ Verify payment on backend
+                        await api.post("/donation/verify", response);
+
+                        // 5️⃣ Show success toast
+                        toast.success("Thank you for supporting BASIR AHMAD ❤️", {
+                            style: {
+                                background: "#7c3aed",
+                                color: "#fff",
+                                fontWeight: "bold",
+                                fontSize: "16px",
+                                textAlign: "center",
+                            },
+                            icon: <span style={{ fontSize: "18px" }}>❤️</span>,
+                        });
+
+                        // 6️⃣ Dismiss donation card
+                        handleDismissForever();
+                    } catch (err) {
+                        if (axios.isAxiosError(err)) {
+                            toast.error("Payment verification failed: " + (err.response?.data?.message || err.message));
+                        } else {
+                            toast.error("An unexpected error occurred during payment verification.");
+                        }
+                    } finally {
+                        setIsPaying(false)
+                    }
+                },
+                modal: {
+                    ondismiss: () => {
+                        console.log("Payment was not completed. Popup closed.");
+                        toast.info("Payment cancelled", { autoClose: 2000 });
+                        setIsPaying(false);
+                    },
+                },
+                theme: { color: "#7c3aed" },
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error("Donation failed: " + (error.response?.data?.message || error.message));
+            } else {
+                toast.error("An unexpected error occurred during donation.");
+            }
+        } finally {
+            setIsPaying(false);
+        }
     };
 
     if (!isVisible) return null;
 
     return (
-        <div className="fixed z-50 bottom-6 left-1/2 -translate-x-1/2
-    w-[calc(100vw-2rem)] max-w-80
-    sm:left-auto sm:translate-x-0 sm:right-6 sm:w-full
-    animate-slide-in-right ">
+        <div className="fixed z-50 bottom-6 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-80 sm:left-auto sm:translate-x-0 sm:right-6 sm:w-full animate-slide-in-right">
             <div className=" rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 p-[2px] shadow-2xl shadow-purple-500/30">
                 <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 p-5">
                     {/* Close Button */}
                     <button
+                        disabled={isPaying}
                         onClick={handleDismiss}
                         className="absolute right-2 top-2 rounded-full p-1.5 text-white/80 transition-colors hover:bg-white/20 hover:text-white cursor-pointer"
                         aria-label="Close donation card"
@@ -90,7 +176,7 @@ const DonationCard = () => {
                     <div className="mb-4 flex gap-2">
                         {presetAmounts.map(({ amount, label, popular }) => (
                             <button
-                                disabled={showCustomAmountDiv}
+                                disabled={showCustomAmountDiv || isPaying}
                                 key={amount}
                                 onClick={() => handleDonate(amount)}
                                 className={cn(
@@ -137,7 +223,7 @@ const DonationCard = () => {
                             <button
                                 onClick={() => handleDonate(customAmount)}
                                 className="mt-4 w-full rounded-xl bg-white text-purple-600 font-bold px-4 py-2 hover:bg-purple-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={customAmount < 1}
+                                disabled={customAmount < 1 || isPaying}
                             >
                                 Donate {customAmount ? `₹${customAmount}` : ""}
                             </button>
@@ -145,7 +231,7 @@ const DonationCard = () => {
                     }
 
                     {/* Custom Amount Link */}
-                    <button className="my-2 w-full text-center text-sm text-white/70 underline-offset-2 transition-colors hover:text-white hover:underline cursor-pointer duration-150" onClick={() => setShowCustomAmountDiv(prev => !prev)}>
+                    <button disabled={isPaying} className="my-2 w-full text-center text-sm text-white/70 underline-offset-2 transition-colors hover:text-white hover:underline cursor-pointer duration-150 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => setShowCustomAmountDiv(prev => !prev)}>
                         {showCustomAmountDiv ? "Hide Custom Amount" : "Donate Custom Amount"}
                     </button>
 
