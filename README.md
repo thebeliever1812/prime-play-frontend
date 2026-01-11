@@ -64,7 +64,7 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 ## 🔗 Backend Repository
 
 You can find the backend source code here:  
-👉 **[Prime Play Backend Repository](https://github.com/thebeliever1812/prime-play-back)**
+👉 **[Prime Play Backend Repository](https://github.com/thebeliever1812/prime-play-backend)**
 
 ---
 
