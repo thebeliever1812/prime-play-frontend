@@ -9,7 +9,7 @@ import { api } from "@/utils/api";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const DONATION_INTERVAL = 30 * 60 * 1000; // 30 minutes
+const TIP_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 const presetAmounts = [
     { amount: 10, label: "Coffee ☕" },
@@ -17,7 +17,7 @@ const presetAmounts = [
     { amount: 100, label: "Hero 🦸" },
 ];
 
-const DonationCard = () => {
+const TipCard = () => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [showCustomAmountDiv, setShowCustomAmountDiv] = useState<boolean>(false);
     const [customAmount, setCustomAmount] = useState<number>(1);
@@ -38,7 +38,7 @@ const DonationCard = () => {
         const now = Date.now();
 
         const canShow =
-            lastShownAt == null || now - lastShownAt >= DONATION_INTERVAL;
+            lastShownAt == null || now - lastShownAt >= TIP_INTERVAL;
 
         const showCard = () => {
             setIsVisible(true);
@@ -48,7 +48,7 @@ const DonationCard = () => {
         // Show quickly if allowed; otherwise wait remaining time
         const delay = canShow
             ? 3000
-            : Math.max(0, DONATION_INTERVAL - (now - (lastShownAt ?? 0)));
+            : Math.max(0, TIP_INTERVAL - (now - (lastShownAt ?? 0)));
         const timer = setTimeout(showCard, delay);
         return () => clearTimeout(timer);
     }, [dismissedForever, lastShownAt, dispatch, isLoadingUser]);
@@ -83,23 +83,23 @@ const DonationCard = () => {
                 return;
             }
 
-            const { data } = await api.post("/donation/create-order", { amount });
+            const { data } = await api.post("/tip/create-order", { amount });
             const order = data.data; // ApiResponse wraps it
 
             const options: RazorpayOptions = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
                 amount: order.amount,
                 currency: "INR",
-                name: "BASIR AHMAD",
-                description: "Support BASIR AHMAD",
+                name: "Prime Play",
+                description: "Support Prime Play by tipping for content",
                 order_id: order.id,
                 handler: async (response) => {
                     try {
                         // 4️⃣ Verify payment on backend
-                        await api.post("/donation/verify", response);
+                        await api.post("/tip/verify", response);
 
                         // 5️⃣ Show success toast
-                        toast.success("Thank you for supporting BASIR AHMAD ❤️", {
+                        toast.success("Thank you for supporting Prime Play ❤️", {
                             style: {
                                 background: "#7c3aed",
                                 color: "#fff",
@@ -136,9 +136,9 @@ const DonationCard = () => {
             rzp.open();
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                toast.error("Donation failed: " + (error.response?.data?.message || error.message));
+                toast.error("Tipping failed: " + (error.response?.data?.message || error.message));
             } else {
-                toast.error("An unexpected error occurred during donation.");
+                toast.error("An unexpected error occurred during tipping.");
             }
         } finally {
             setIsPaying(false);
@@ -196,7 +196,7 @@ const DonationCard = () => {
                                     </div>
 
                                     <p className="mt-5 text-lg font-bold text-white tracking-wide">
-                                        Donating
+                                        Supporting
                                         <span className="inline-flex ml-1">
                                             <span className="animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
                                             <span className="animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
@@ -212,7 +212,7 @@ const DonationCard = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-white">Support Prime Play</h3>
-                                        <p className="text-sm text-white/80">Help us keep content free</p>
+                                            <p className="text-sm text-white/80">Tip us if you enjoy the content</p>
                                     </div>
                                 </div>
 
@@ -269,14 +269,14 @@ const DonationCard = () => {
                                             className="mt-4 w-full rounded-xl bg-white text-purple-600 font-bold px-4 py-2 hover:bg-purple-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={customAmount < 1 || isPaying}
                                         >
-                                            Donate {customAmount ? `₹${customAmount}` : ""}
+                                            Support {customAmount ? `₹${customAmount}` : ""}
                                         </button>
                                     )
                                 }
 
                                 {/* Custom Amount Link */}
                                 <button disabled={isPaying} className="my-2 w-full text-center text-sm text-white/70 underline-offset-2 transition-colors hover:text-white hover:underline cursor-pointer duration-150 disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => setShowCustomAmountDiv(prev => !prev)}>
-                                    {showCustomAmountDiv ? "Hide Custom Amount" : "Donate Custom Amount"}
+                                        {showCustomAmountDiv ? "Hide Custom Amount" : "Support Custom Amount"}
                                 </button>
 
                                 {/* Don't show again */}
@@ -295,4 +295,4 @@ const DonationCard = () => {
     );
 };
 
-export default DonationCard
+export default TipCard

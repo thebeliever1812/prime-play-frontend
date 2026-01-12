@@ -20,7 +20,7 @@ import EditProfileCard from "./EditProfileCard";
 import DeletionSuccessful from "./DeletionSuccessful";
 import VideoCardSkeleton from "./VideoCardSkeleton";
 import { ImageUploadWithPreview } from "./ImageUploadWithPreview";
-import DonationCard from "./DonationCard";
+import TipCard from "./TipCard";
 
 export {
     Container,
@@ -45,5 +45,5 @@ export {
     DeletionSuccessful,
     VideoCardSkeleton,
     ImageUploadWithPreview,
-    DonationCard,
+    TipCard,
 };
