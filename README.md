@@ -40,7 +40,7 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 
 ## 🚀 Live Demo
 
-[Visit Prime Play](https://prime-play-frontend.vercel.app)
+[Visit Prime Play](https://primeplay-app.vercel.app)
 
 ---
 
