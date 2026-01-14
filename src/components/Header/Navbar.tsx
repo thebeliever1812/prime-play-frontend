@@ -186,7 +186,7 @@ const Navbar = () => {
                     <div className='fixed w-full h-screen left-0 bg-black/40 backdrop-blur-[2px] top-0 z-40' onClick={() => setShowProfile(false)}>
                     </div>
                 }
-                <TipCard />
+                {/* <TipCard /> */}
             </nav>
             <div className='w-full h-[61px] sm:h-[69px]'>
             </div>
