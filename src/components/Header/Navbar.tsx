@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, TextAlignJustify } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { setUser, clearUser, setLoading } from "@/lib/features/user/user.slice"
-import { SearchInput, Sidebar } from '@/components/Header'
+import { NotificationBell, SearchInput, Sidebar } from '@/components/Header'
 import { TipCard } from '@/components'
 
 const Navbar = () => {
@@ -134,14 +134,20 @@ const Navbar = () => {
                         </> : <>
                             {
                                 isAuthenticated ?
-                                    <Link href={"/upload"} className='w-full max-w-fit flex items-center gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white text-sm sm:text-base rounded-full '>
-                                        <div className='w-[15.63px] aspect-square relative shrink-0'>
-                                            <Image src={"/upload.png"} fill alt='Upload icon' />
-                                        </div>
-                                        <span className='hidden sm:block'>
-                                            Upload
+                                    <>
+                                        <Link href={"/upload"} className='w-full max-w-fit flex items-center gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white text-sm sm:text-base rounded-full '>
+                                            <div className='w-[15.63px] aspect-square relative shrink-0'>
+                                                <Image src={"/upload.png"} fill alt='Upload icon' />
+                                            </div>
+                                            <span className='hidden sm:block'>
+                                                Upload
+                                            </span>
+
+                                        </Link>
+                                        <span>
+                                            <NotificationBell />
                                         </span>
-                                    </Link>
+                                    </>
                                     :
                                     <Link href={"/login"} className='w-full max-w-fit sm:flex sm:items-center gap-[8px] px-[16px] py-[10px] bg-[#4F46E5] text-white text-sm sm:text-base rounded-full hidden'>
                                         Login
