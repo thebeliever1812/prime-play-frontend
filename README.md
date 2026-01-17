@@ -6,11 +6,12 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-0EA5E9?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
 
 Prime Play is a modern YouTube-style video sharing platform that allows users to upload, watch, interact with, and organize videos — built with a powerful and optimized Next.js frontend.
 
 ### ✨ Tagline
-_A fast, scalable, and feature-rich video platform built with a modern MERN web stack._
+_A fast, scalable, and feature-rich video platform with real-time notifications built on a modern MERN web stack._
 
 ---
 
@@ -18,12 +19,13 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 
 - 🎥 **Seamless Video Uploading** – Supports modern formats with smooth Cloudinary integration  
 - 👍 **Interactive Engagement** – Users can like and comment on content  
-- 📌 **Channel Subscriptions** – Follow your favorite creators effortlessly  
+- 📌 **Channel Subscriptions** – Follow your favorite creators effortlessly 
+- 🔔 **Real-Time Notification System** – Instant notifications for subscriptions, uploads, and user interactions powered by Socket.IO
 - 🔐 **Secure Login System** – JWT-based verified access  
 - 🕒 **Personal Viewing History** – Automatically tracks previously watched videos
 - 🎥 **Creator Video Manager** – Manage and review all videos authored by the user
 - 🎶 **Custom Playlist Support** – Create and organize playlists with ease
-- 🔎 **Advanced Search Functionality** – Quickly find videos across the platform  
+- 🔎 **Advanced Search Functionality** – Quickly find videos across the platform
 - ⚡ **Responsive Design** – Smooth, optimized UI across all devices
 
 ### 📊 User Dashboard
@@ -35,6 +37,28 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 - 👥 **My Subscribers** – View and manage channel subscribers  
 - 🔔 **My Subscriptions** – Manage followed creators  
 - ✏️ **Edit Profile** – Update personal and channel details 
+
+---
+
+## 🔔 Real-Time Notification System
+
+Prime Play includes a production-grade real-time notification system designed for scalability and performance.
+
+### Key Highlights
+- 📡 **Socket.IO Integration** – Pushes notifications instantly without page refresh
+- ⚡ **Optimized Fetch Strategy**
+  - Fetches latest 3 notifications by default
+  - Uses `limit + 1` strategy to detect more notifications
+- 👀 **View All Notifications** – Load full notification history on demand
+- ✅ **Read Management**
+  - Mark individual notifications as read
+  - Mark all notifications as read
+- 🗑️ **Notification Cleanup** – Delete individual notifications
+- 🧠 **Client-side Optimization**
+  - Prevents duplicate notifications
+  - Enforces UI limits during real-time updates
+
+This system ensures users never miss important updates while keeping the UI fast and clutter-free.
 
 ---
 
@@ -56,6 +80,7 @@ _A fast, scalable, and feature-rich video platform built with a modern MERN web 
 ### Backend & External Services
 - Node.js, Express  
 - MongoDB + Mongoose  
+- Socket.IO
 - Cloudinary  
 - JWT Authentication  
 
