@@ -2,6 +2,7 @@ export interface Notification {
     _id: string;
     message: string;
     sender: string;
+    senderName?: string;
     createdAt: string;
     isRead: boolean;
     type: "NEW_VIDEO" | "COMMENT" | "LIKE" | "SUBSCRIBE";

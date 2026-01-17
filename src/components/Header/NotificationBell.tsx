@@ -6,7 +6,7 @@ import { NotificationItem } from "./index"
 
 export const NotificationBell = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification } = useNotifications();
+    const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification, hasMoreNotifications, fetchAllNotifications } = useNotifications();
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Close on outside click
@@ -91,6 +91,7 @@ export const NotificationBell = () => {
                                         notification={notification}
                                         onMarkAsRead={markAsRead}
                                         onRemove={removeNotification}
+                                        setIsOpen={setIsOpen}
                                     />
                                 ))}
                             </div>
@@ -104,9 +105,9 @@ export const NotificationBell = () => {
                     </div>
 
                     {/* Footer */}
-                    {notifications.length > 0 && (
+                    {hasMoreNotifications && (
                         <div className="border-t-[1px] border-[#E2E8F0] px-4 py-2 bg-muted/30 rounded-b-lg">
-                            <button className="w-full text-xs text-muted-foreground hover:text-foreground py-1.5 rounded-md hover:bg-muted transition-colors cursor-pointer">
+                            <button className="w-full text-xs text-muted-foreground hover:text-foreground py-1.5 rounded-md hover:bg-muted transition-colors cursor-pointer" onClick={fetchAllNotifications}>
                                 View all notifications
                             </button>
                         </div>

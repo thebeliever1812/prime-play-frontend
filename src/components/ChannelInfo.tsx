@@ -48,14 +48,14 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({ username }) => {
         <div className='w-full pt-3 pb-3'>
             <div className='w-full h-32 sm:h-56 relative'>
                 {/* Cover image */}
-                <div className='w-full h-full overflow-hidden relative rounded-2xl rounded-bl-none'>
+                <div className='w-full h-full overflow-hidden relative rounded-2xl rounded-bl-none '>
                     <Image src={channelData?.coverImage || "/default_cover_image.jpeg"} alt='Cover Image' fill className='object-cover rounded-2xl rounded-bl-none' />
                 </div>
                 {/* Profile Image */}
                 <div className='aspect-square rounded-full w-32 sm:w-52 absolute bottom-0 left-0 translate-y-1/2 '>
                     <div className='w-full h-1/2 overflow-hidden relative rounded-t-full border-2 sm:border-4 border-b-0 sm:border-b-0 border-white'>
                     </div>
-                    <Image src={channelData?.avatar || "/default_avatar.png"} alt='Avatar' fill className='object-cover' />
+                    <Image src={channelData?.avatar || "/default_avatar.png"} alt='Avatar' fill className='object-cover rounded-full' />
                 </div>
             </div>
             {

@@ -3,6 +3,7 @@ import { Check, X, Info, Youtube, MessageSquareMore, ThumbsUp, UserCheck } from 
 import { cn } from '@/utils/cn';
 import { Notification } from '@/types/notification';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 const getTimeAgo = (date: string): string => {
     return formatDistanceToNow(new Date(date), {
@@ -29,9 +30,11 @@ interface NotificationItemProps {
     notification: Notification;
     onMarkAsRead: (id: string) => void;
     onRemove: (id: string) => void;
+    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NotificationItem = ({ notification, onMarkAsRead, onRemove }: NotificationItemProps) => {
+const NotificationItem = ({ notification, onMarkAsRead, onRemove, setIsOpen }: NotificationItemProps) => {
+    const router = useRouter();
     return (
         <div
             className={cn(
@@ -52,20 +55,29 @@ const NotificationItem = ({ notification, onMarkAsRead, onRemove }: Notification
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-0 pr-6 cursor-pointer">
+            <div className="flex-1 min-w-0 pr-6 cursor-pointer" onClick={() => {
+                if (notification.type === 'NEW_VIDEO' && notification.video) {
+                    router.push(`/video/${notification.video}`)
+                    setIsOpen && setIsOpen(false);
+                    onMarkAsRead(notification._id);
+                }
+            } }>
                 {notification.type === 'NEW_VIDEO' && (
                     <p className={cn(
                         'text-sm font-medium truncate',
                         !notification.isRead ? 'text-foreground' : 'text-muted-foreground'
                     )}>
-                        New video from {notification.sender}
+                        New video from {notification.senderName || 'a channel'}
                     </p>
                 )}
                 <p className={cn(
                     'text-sm',
                     !notification.isRead ? 'text-foreground/80' : 'text-muted-foreground'
                 )}>
-                    {notification.message}
+                    {notification.message.length > 40
+                        ? notification.message.slice(0, 40) + '...'
+                        : notification.message
+                    }
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                     {getTimeAgo(notification.createdAt)}
@@ -73,7 +85,7 @@ const NotificationItem = ({ notification, onMarkAsRead, onRemove }: Notification
             </div>
 
             {/* Actions */}
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute right-0 bottom-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 {!notification.isRead && (
                     <button
                         className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors cursor-pointer"
