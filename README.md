@@ -147,14 +147,6 @@ Ensure the required environment variables are added in Vercel Project Settings.
 
 ---
 
-## 📝 License
-
-This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License.
-
-You are free to share, use, and modify the code for non-commercial purposes, with attribution. Commercial use is strictly prohibited.
-
----
-
 ## 👤 Author
 
 **Basir Ahmad**  
