@@ -4,6 +4,7 @@ import { api } from '@/utils/api';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from "next/navigation"
+import { VideoOff } from 'lucide-react';
 
 interface Owner {
     _id: string;
@@ -105,7 +106,7 @@ const AllVideos = () => {
     }, [search]);
 
     if (isInitialLoading) {
-        return (<Container className="max-w-6xl py-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        return (<Container className="max-w-6xl py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 9 }).map((_, index) => (
                 <VideoCardSkeleton key={index} />
             ))}
@@ -113,22 +114,33 @@ const AllVideos = () => {
         )
     }
 
-    if (videos.length === 0) {
+    if (!isInitialLoading && videos.length === 0) {
         return (
-            <Container className="max-w-6xl py-4 flex justify-center items-center">
-                <p className="text-gray-600">No videos found</p>
+            <Container className="max-w-6xl">
+                <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
+                    <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
+                        <VideoOff className="w-10 h-10 text-muted-foreground" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-foreground mb-2">No videos found</h2>
+                    <p className="text-muted-foreground text-center max-w-md">
+                        {search
+                            ? `We couldn't find any videos matching "${search}". Try different keywords.`
+                            : "There are no videos available at the moment."
+                        }
+                    </p>
+                </div>
             </Container>
         )
     }
 
     return (
         <Container className="max-w-6xl py-4">
-            {search && (
-                <p className="text-base text-gray-500 mb-4">
-                    Search results for &quot;{search}&quot;
+            {search && !isFetchingNext && (
+                <p className="text-muted-foreground mb-6 animate-fade-in">
+                    Search results for "<span className="text-foreground font-medium">{search}</span>"
                 </p>
             )}
-            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
                 {videos.map((video, index) => {
                     const isLast = index === videos.length - 1;
                     return (<div className='w-full' ref={isLast ? lastVideoRef : null} key={video._id}>
@@ -154,7 +166,7 @@ const AllVideos = () => {
                     </>
                 )}
             </div>
-            
+
         </Container>
     )
 }
