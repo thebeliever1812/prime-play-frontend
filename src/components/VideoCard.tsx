@@ -31,9 +31,10 @@ interface VideoCardProps {
     avatarUrl?: string;
     ownerId?: string
     setVideos?: React.Dispatch<React.SetStateAction<Video[]>>;
+    duration?: number;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail, views, avatarUrl, username, fullName, ownerId, setVideos, duration }) => {
     const formattedUploadDate = formatDistanceToNow(new Date(uploadDate), { addSuffix: true });
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [showDeletePopUp, setShowDeletePopUp] = useState<boolean>(false);
@@ -61,6 +62,13 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail
         }
     }
 
+    function formatTime(seconds: number) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+
+        return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
     return (
         <div className='w-full max-w-md rounded-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-1 cursor-pointer hover:shadow-xl transition-shadow duration-300 group' onClick={() => router.push(`/video/${_id}`)}>
             <div className='w-full aspect-video rounded-lg relative overflow-hidden '>
@@ -76,6 +84,11 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail
                 <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-300'>
                     <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover' />
                 </div>
+                {duration && (
+                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/50 text-white text-xs font-medium rounded">
+                        {formatTime(duration)}
+                    </div>
+                )}
             </div>
             {/* Video details */}
             <div className='w-full px-2 flex justify-between items-start gap-1 sm:gap-2 mt-4 mb-2'>
@@ -118,8 +131,8 @@ const VideoCard: React.FC<VideoCardProps> = ({ _id, title, uploadDate, thumbnail
                                 <ul className='w-64 sm:w-72 text-sm sm:text-base absolute bg-[#F8FAFC] z-50 translate-y-1 right-0 rounded-md p-1 sm:p-1.5 flex flex-col items-start space-y-1 duration-150 ease-in' >
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 sm:gap-2 items-center justify-start'><Pencil className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Edit</li>
                                     <li className='w-full p-1 rounded-sm hover:bg-[#E2E8F0] flex gap-1 items-center justify-start sm:gap-2' onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowOptions(false);
+                                        e.stopPropagation();
+                                        setShowOptions(false);
                                         setShowDeletePopUp(true);
                                     }}><Trash2 className='w-[18px] sm:w-[20px] active:bg-[#E2E8F0]' />Delete</li>
                                 </ul>

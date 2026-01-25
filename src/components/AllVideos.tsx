@@ -21,6 +21,7 @@ interface Video {
     createdAt: string;
     views: number;
     ownerInfo: Owner;
+    duration: number;
 }
 
 const AllVideos = () => {
@@ -88,6 +89,8 @@ const AllVideos = () => {
                         search,
                     },
                 });
+
+                console.log(response.data?.data.videos)
                 setVideos(response.data?.data.videos || []);
                 setNextCursor(response.data.data.nextCursor);
                 setHasMore(!!response.data.data.nextCursor);
@@ -154,6 +157,7 @@ const AllVideos = () => {
                             avatarUrl={video.ownerInfo.avatar}
                             username={video.ownerInfo.username}
                             fullName={video.ownerInfo.fullName}
+                            duration={video.duration}
                         />
                     </div>)
                 }
