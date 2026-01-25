@@ -117,7 +117,7 @@ const Navbar = () => {
             <nav className={`w-full bg-white flex gap-[16px] justify-between px-[12px] py-[10px] sm:px-[24px] sm:py-[12px] border-b-[1px] border-[#E2E8F0] fixed top-0 left-0 z-50 transition-transform duration-300`}>
                 <div className='flex items-center gap-2 sm:gap-4'>
                     <div className='w-6 h-6 sm:w-7 sm:h-7 cursor-pointer' onClick={() => setShowMenu(!showMenu)}>
-                        <TextAlignJustify size={28} />
+                        <TextAlignJustify  />
                     </div>
                     <div className='w-[25px] sm:w-[30px] aspect-square relative cursor-pointer' onClick={() => router.push("/")}>
                         <Image src={"/logo.png"} alt='Prime play logo' fill />
