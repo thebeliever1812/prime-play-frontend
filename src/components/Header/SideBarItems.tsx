@@ -22,7 +22,7 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ setShowMenu }) => {
     const pathname = usePathname()
 
     return (
-        <ul className='w-full space-y-2 mb-15'>
+        <ul className='w-full space-y-2 mt-4 mb-15'>
             {
                 sidebarItems.map((item, index) => {
                     const isActive = item.path === pathname
