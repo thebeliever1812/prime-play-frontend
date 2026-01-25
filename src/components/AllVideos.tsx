@@ -140,7 +140,7 @@ const AllVideos = () => {
         <Container className="max-w-6xl py-4">
             {search && !isFetchingNext && (
                 <p className="text-muted-foreground mb-6 animate-fade-in">
-                    Search results for "<span className="text-foreground font-medium">{search}</span>"
+                    Search results for &apos;<span className="text-foreground font-medium">{search}</span>&apos;
                 </p>
             )}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
