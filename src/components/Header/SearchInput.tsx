@@ -16,7 +16,7 @@ const SearchInput = () => {
 
     return (
         <div className="relative w-full max-w-[165px] sm:max-w-[400px]">
-            <div className="flex items-center gap-2 px-3 py-2 border border-[#CBD5E1] rounded-full bg-white hover:border-[#94A3B8] transition-colors">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-white bg-[#f5faff] hover:border-[#94A3B8]/50 ">
                 <Image
                     src="/search_icon.png"
                     alt="Search"
