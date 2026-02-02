@@ -1,7 +1,8 @@
 "use client"
 import { api } from '@/utils/api';
+import { cn } from '@/utils/cn';
 import axios from 'axios';
-import { EllipsisVertical, Trash2 } from 'lucide-react';
+import { Clock, EllipsisVertical, Trash2 } from 'lucide-react';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -30,10 +31,20 @@ interface WatchHistoryVideoCardProps {
     thumbnail: string;
     views: number;
     fullName: string;
+    duration: number;
+    avatar: string;
+    username: string;
     setVideos: React.Dispatch<React.SetStateAction<Video[]>>;
 }
 
-const WatchHistoryVideoCard: React.FC<WatchHistoryVideoCardProps> = ({ _id, title, thumbnail, views, fullName, setVideos }) => {
+const formatDuration = (seconds?: number): string => {
+    if (!seconds) return '';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+const WatchHistoryVideoCard: React.FC<WatchHistoryVideoCardProps> = ({ _id, title, thumbnail, views, fullName, avatar, duration, username, setVideos }) => {
     const router = useRouter()
     const [showOptions, setShowOptions] = useState<boolean>(false);
 
@@ -78,32 +89,79 @@ const WatchHistoryVideoCard: React.FC<WatchHistoryVideoCardProps> = ({ _id, titl
     }
 
     return (
-        <div className='w-full flex gap-3 sm:gap-5 items-start p-1 rounded-[10px] shadow-[5px_5px_10px_rgba(0,0,0,0.1)] group cursor-pointer hover:shadow-xl transition-shadow duration-300' onClick={() => router.push(`/video/${_id}`)}>
-            <div className='w-full max-w-40 sm:max-w-56 lg:max-w-sm aspect-video rounded-[10px] relative '>
+        <div
+            className={cn(
+                "group flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 rounded-xl cursor-pointer",
+                "bg-card hover:bg-muted/50 transition-all duration-200",
+                "border border-transparent hover:border-border/50",
+                "hover:shadow-md"
+            )}
+            onClick={() => router.push(`/video/${_id}`)}
+        >
+            {/* Thumbnail */}
+            <div className="w-full sm:max-w-56 md:max-w-64 aspect-video relative shrink-0 rounded-lg overflow-hidden bg-gray-400">
                 <Image
                     src={thumbnail}
                     alt={title}
                     fill
                     objectFit='cover'
-                    className='rounded-[10px]'
+                    className='rounded-[10px] w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
                     loading='lazy'
                 />
+
+                {/* Play overlay */}
                 <div className='w-full h-full absolute inset-0 bg-black/40 rounded-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
                     <div className='w-full h-full flex justify-center  items-center'>
-                        <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover'/>
-                    </div>
-                </div>
-            </div>
-            <div className='w-full flex justify-between gap-2 items-start'>
-                <div className='space-y-1 sm:space-y-3 flex flex-col justify-between sm:justify-start mt-1 sm:mt-3 '>
-                    <h2 className='font-semibold text-md sm:text-xl md:text-2xl lg:text-3xl text-[#1E293B] duration-200'>{title.length > 30 ? title.slice(0, 30) + "..." : title}</h2>
-                    <div className=''>
-                        <p className='text-xs sm:text-sm md:text-base lg:text-lg text-gray-600'>{fullName}</p>
-                        <p className='text-xs sm:text-sm md:text-base  text-gray-600'>{views} views</p>
+                        <Image width={40} height={40} src={"/play_icon.svg"} alt='play icon' objectFit='cover' />
                     </div>
                 </div>
 
-                <button className='mt-1 sm:mt-3 relative cursor-pointer' onClick={(e) => {
+                {/* Duration badge */}
+                {duration && (
+                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-foreground/80 text-background text-xs font-medium rounded flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatDuration(duration)}
+                    </div>
+                )}
+            </div>
+
+            {/* Content */}
+            <div className="w-full flex justify-between gap-2 items-start">
+                <div className='flex-1 min-w-0 flex flex-col justify-center py-1'>
+                    {/* Title */}
+                    <h3 className="font-semibold text-black text-base sm:text-lg leading-snug line-clamp-2 group-hover:text-indigo-500 transition-colors">
+                        {title}
+                    </h3>
+
+                    {/* Channel info */}
+                    <div className="flex items-center gap-2 mt-2 ">
+                        <div className="flex items-center gap-2" onClick={(e) => {
+                            e.stopPropagation()
+                            router.push(`/channel/${username}`)
+                        }}>
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-muted flex-shrink-0">
+                                <Image
+                                    src={avatar}
+                                    alt={fullName}
+                                    width={36}
+                                    height={36}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <span className="text-sm sm:text-base text-gray-500 truncate">
+                                {fullName}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Views */}
+                    <div className="flex items-center text-sm text-gray-500 ml-1 mt-2">
+                        <span>{views} views</span>
+                    </div>
+                </div>
+
+                {/* Options menu */}
+                <button className='relative cursor-pointer hover:bg-gray-100 p-2 rounded-full' onClick={(e) => {
                     e.stopPropagation()
                     setShowOptions(prev => !prev)
                 }}>

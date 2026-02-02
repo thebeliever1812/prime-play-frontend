@@ -21,6 +21,7 @@ import DeletionSuccessful from "./DeletionSuccessful";
 import VideoCardSkeleton from "./VideoCardSkeleton";
 import { ImageUploadWithPreview } from "./ImageUploadWithPreview";
 import TipCard from "./TipCard";
+import WatchHistoryCardSkeleton from "./WatchHistoryCardSkeleton";
 
 export {
     Container,
@@ -46,4 +47,5 @@ export {
     VideoCardSkeleton,
     ImageUploadWithPreview,
     TipCard,
+    WatchHistoryCardSkeleton,
 };
