@@ -1,8 +1,9 @@
 "use client"
-import { Container, CustomLoader, VideoCard } from '@/components'
+import { Container, CustomLoader, VideoCard, VideoCardSkeleton } from '@/components'
 import { useAppSelector } from '@/lib/hook';
 import { api } from '@/utils/api';
 import axios from 'axios';
+import { LogIn, ThumbsUp, VideoOff } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
@@ -53,31 +54,62 @@ const LikedVideos = () => {
         }
     }, [isLoadingUser, isAuthenticated]);
 
-    if (isLoadingUser) {
-        return (<Container className="max-w-6xl flex justify-center items-center">
-            <CustomLoader />
+
+    if (loadingVideos) {
+        return (<Container className="max-w-6xl py-6">
+            <div className="flex items-center gap-3 mb-6">
+                <ThumbsUp className="h-7 w-7 text-indigo-600" />
+                <h1 className="text-2xl font-semibold text-[#1E293B]">Liked Videos</h1>
+            </div>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start justify-items-center">
+                {Array.from({ length: 9 }).map((_, index) => (
+                    <VideoCardSkeleton key={index} />
+                ))}
+            </div>
         </Container>
         )
     }
 
     if (!isAuthenticated) {
-        return (<Container className="max-w-6xl flex justify-center items-center">
-            <p className="text-gray-600">Please login to view your videos. <Link href="/login" className="text-blue-600 hover:underline">Login</Link></p>
-        </Container>
-        )
-    }
-
-    if (loadingVideos) {
-        return (<Container className="max-w-6xl flex justify-center items-center">
-            <CustomLoader />
+        return (<Container className="max-w-6xl py-6">
+            <div className="flex items-center gap-3 mb-6">
+                <ThumbsUp className="h-7 w-7 text-indigo-600" />
+                <h1 className="text-2xl font-semibold text-[#1E293B]">Liked Videos</h1>
+            </div>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                    <LogIn className="h-10 w-10 text-gray-500" />
+                </div>
+                <h2 className="text-xl font-semibold text-foreground mb-2">
+                    Log in to view your liked videos
+                </h2>
+                <p className="text-gray-500 mb-6 max-w-md">
+                    Manage and revisit all the videos you&apos;ve liked.
+                </p>
+                <Link href="/login" className="text-blue-600 hover:underline">Login</Link>
+            </div>
         </Container>
         )
     }
 
     if (likedVideos.length === 0) {
         return (
-            <Container className="max-w-6xl py-4 flex justify-center items-center">
-                <p className="text-gray-600">No videos found</p>
+            <Container className="max-w-6xl py-6">
+                <div className="flex items-center gap-3 mb-6">
+                    <ThumbsUp className="h-7 w-7 text-indigo-600" />
+                    <h1 className="text-2xl font-semibold text-[#1E293B]">Liked Videos</h1>
+                </div>
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                        <VideoOff className="h-10 w-10 text-gray-500" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-foreground mb-2">
+                        No liked videos yet
+                    </h2>
+                    <p className="text-gray-500 mb-6 max-w-md">
+                        Videos you like will appear here so you can easily watch them again.
+                    </p>
+                </div>
             </Container>
         )
     }
@@ -97,7 +129,7 @@ const LikedVideos = () => {
                 />)
                 )}
             </div>
-            
+
         </Container>
     )
 }

@@ -121,11 +121,11 @@ const AllVideos = () => {
         return (
             <Container className="max-w-6xl">
                 <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
-                    <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
-                        <VideoOff className="w-10 h-10 text-muted-foreground" />
+                    <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                        <VideoOff className="w-10 h-10 text-gray-500" />
                     </div>
-                    <h2 className="text-xl font-semibold text-foreground mb-2">No videos found</h2>
-                    <p className="text-muted-foreground text-center max-w-md">
+                    <h2 className="text-xl font-semibold text-black mb-2">No videos found</h2>
+                    <p className="text-gray-500 text-center max-w-md">
                         {search
                             ? `We couldn't find any videos matching "${search}". Try different keywords.`
                             : "There are no videos available at the moment."
