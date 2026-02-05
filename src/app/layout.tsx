@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   description:
     "PrimePlay - Stream your favorite videos, explore creators, and enjoy seamless entertainment.",
-  metadataBase: new URL("https://prime-play-frontend.vercel.app"),
+  metadataBase: new URL("https://primeplay-app.vercel.app"),
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "PrimePlay",
     description:
       "PrimePlay - Stream your favorite videos, explore creators, and enjoy seamless entertainment.",
-    url: "https://prime-play-frontend.vercel.app",
+    url: "https://primeplay-app.vercel.app",
     siteName: "PrimePlay",
     images: [
       {
